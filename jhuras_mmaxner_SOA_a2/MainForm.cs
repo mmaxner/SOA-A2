@@ -22,6 +22,8 @@ namespace SOA___Assignment_2___Web_Services
         public MainForm()
 		{
 			InitializeComponent();
+            gridArguments.Columns.Add("argumentName", "Argument");
+            gridArguments.Columns.Add("argumentValue", "Value");
 
             // load all settings in the xml config file
             loadSoapConfig();
@@ -30,14 +32,16 @@ namespace SOA___Assignment_2___Web_Services
             populateServices();
 
 			// populate combo box 2 with a list of methods from the first url in the txt file (selected in combo box 1)
-			populateActions(cmbService.SelectedText);
+			populateActions(((ComboBoxItem)cmbService.SelectedItem).Text);
+
+            populateArguments(((ComboBoxItem)cmbService.SelectedItem).Text, ((ComboBoxItem)cmbMethod.SelectedItem).Text);
 		}
 
 		private async void btnInvoke_ClickAsync(object sender, EventArgs e)
 		{
             string url = (cmbService.SelectedItem as ComboBoxItem).Value;
             string action = (cmbMethod.SelectedItem as ComboBoxItem).Value;
-            List<string> parameters = txtArguments.Text.Split(',').OfType<string>().ToList(); // convert parameters to separated list
+            //List<string> parameters = txtArguments.Text.Split(',').OfType<string>().ToList(); // convert parameters to separated list
 
             string result = WebServiceFramework.CallWebService(url, action);
 			if (!string.IsNullOrEmpty(result))
@@ -79,7 +83,8 @@ namespace SOA___Assignment_2___Web_Services
 
 		private void populateActions(string serviceName)
 		{
-            List<string> actions = _soapConfig.Descendants("services").Elements("service").Elements("action").Elements("name").Select(e => e.Value).ToList();
+            List<string> actions = _soapConfig.Descendants("services").Elements("service").Elements("name").Where(e => e.Value == serviceName).Ancestors("service").Elements("action").Elements("name").Select(f => f.Value).ToList();
+
             foreach (var action in actions)
             {
                 cmbMethod.Items.Add(new ComboBoxItem() { Text = action, Value = action });
@@ -88,6 +93,16 @@ namespace SOA___Assignment_2___Web_Services
             if (cmbMethod.Items.Count > 0)
             {
                 cmbMethod.SelectedIndex = 0;
+            }
+        }
+
+        private void populateArguments(string serviceName, string methodName)
+        {
+            List<string> arguments = _soapConfig.Descendants("services").Elements("service").Elements("name").Where(e => e.Value == serviceName).Ancestors("service").Elements("action").Elements("name").Where(f => f.Value == methodName).Ancestors("action").Elements("parameter").Select(g => g.Value).ToList();
+
+            foreach (var argument in arguments)
+            {
+                gridArguments.Rows.Add(argument, string.Empty);
             }
         }
 
