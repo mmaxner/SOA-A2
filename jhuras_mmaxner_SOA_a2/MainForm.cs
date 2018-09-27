@@ -36,6 +36,7 @@ namespace SOA___Assignment_2___Web_Services
 			InitializeComponent();
             /*gridArguments.Columns.Add("argumentName", "Argument");
             gridArguments.Columns.Add("argumentValue", "Value");*/
+            
 
             // load all settings in the xml config file
             loadSoapConfig();
@@ -47,7 +48,7 @@ namespace SOA___Assignment_2___Web_Services
 			populateActions(((ComboBoxItem)cmbService.SelectedItem).Text);
 
             populateArguments(((ComboBoxItem)cmbService.SelectedItem).Text, ((ComboBoxItem)cmbMethod.SelectedItem).Text);
-		}
+        }
 
         public void GenerateArgumentControls()
         {
@@ -66,6 +67,9 @@ namespace SOA___Assignment_2___Web_Services
                 text.Size = ARGUMENT_TEXTBOX_SIZE;
                 
                 text.DataBindings.Add("Text", CurrentArguments[i], "value");
+
+                this.Controls.Add(label);
+                this.Controls.Add(text);
             }
         }
 
@@ -130,7 +134,7 @@ namespace SOA___Assignment_2___Web_Services
 
         private void populateArguments(string serviceName, string methodName)
         {
-            List<SOAPArgument> arguments = _soapConfig.Descendants("services")
+            CurrentArguments = _soapConfig.Descendants("services")
                 .Elements("service")
                 .Elements("name")
                 .Where(e => e.Value == serviceName)
@@ -142,13 +146,13 @@ namespace SOA___Assignment_2___Web_Services
                 .Elements("parameter")
                 .Select(g => new SOAPArgument(g.Element("dataName").Value, g.Element("uiName").Value))
                 .ToList();
-            
 
 
-            foreach (var argument in arguments)
+            GenerateArgumentControls();
+            /*foreach (var argument in arguments)
             {
                 gridArguments.Rows.Add(argument.uiName, string.Empty);
-            }
+            }*/
         }
 
         //https://stackoverflow.com/questions/1879395/how-do-i-generate-a-stream-from-a-string
