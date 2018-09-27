@@ -46,16 +46,18 @@
             this.cmbService.FormattingEnabled = true;
             this.cmbService.Location = new System.Drawing.Point(75, 12);
             this.cmbService.Name = "cmbService";
-            this.cmbService.Size = new System.Drawing.Size(121, 21);
+            this.cmbService.Size = new System.Drawing.Size(397, 21);
             this.cmbService.TabIndex = 0;
+            this.cmbService.SelectedIndexChanged += new System.EventHandler(this.cmbService_SelectedIndexChanged);
             // 
             // cmbMethod
             // 
             this.cmbMethod.FormattingEnabled = true;
             this.cmbMethod.Location = new System.Drawing.Point(75, 39);
             this.cmbMethod.Name = "cmbMethod";
-            this.cmbMethod.Size = new System.Drawing.Size(121, 21);
+            this.cmbMethod.Size = new System.Drawing.Size(397, 21);
             this.cmbMethod.TabIndex = 1;
+            this.cmbMethod.SelectedIndexChanged += new System.EventHandler(this.cmbMethod_SelectedIndexChanged);
             // 
             // lblService
             // 

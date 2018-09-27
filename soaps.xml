@@ -2,8 +2,34 @@
 	<service>
 		<name>Calculator</name>
 		<url>http://www.dneonline.com/calculator.asmx</url>
-		<action>Add</action>
-		<parameter>intA</parameter>
-		<parameter>intB</parameter>
+		<action>
+			<name>Add</name>
+			<parameter>intA</parameter>
+			<parameter>intB</parameter>
+		</action>
+		<action>
+			<name>Subtract</name>
+			<parameter>intC</parameter>
+			<parameter>intD</parameter>
+		</action>
+		<action>
+			<name>Multiply</name>
+			<parameter>intA</parameter>
+			<parameter>intB</parameter>
+		</action>
+		<action>
+			<name>Divide</name>
+			<parameter>intA</parameter>
+			<parameter>intB</parameter>
+		</action>
+	</service>
+	<service>
+		<name>Dictionary</name>
+		<url>http://services.aonaware.com/DictService/DictService.asmx</url>
+		<action>
+			<name>Add</name>
+			<parameter>intA</parameter>
+			<parameter>intB</parameter>
+		</action>
 	</service>
 </services>

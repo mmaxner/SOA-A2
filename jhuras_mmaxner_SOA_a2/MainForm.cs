@@ -83,6 +83,8 @@ namespace SOA___Assignment_2___Web_Services
 
 		private void populateActions(string serviceName)
 		{
+            cmbMethod.Items.Clear();
+
             List<string> actions = _soapConfig.Descendants("services").Elements("service").Elements("name").Where(e => e.Value == serviceName).Ancestors("service").Elements("action").Elements("name").Select(f => f.Value).ToList();
 
             foreach (var action in actions)
@@ -98,6 +100,8 @@ namespace SOA___Assignment_2___Web_Services
 
         private void populateArguments(string serviceName, string methodName)
         {
+            gridArguments.Rows.Clear();
+
             List<string> arguments = _soapConfig.Descendants("services").Elements("service").Elements("name").Where(e => e.Value == serviceName).Ancestors("service").Elements("action").Elements("name").Where(f => f.Value == methodName).Ancestors("action").Elements("parameter").Select(g => g.Value).ToList();
 
             foreach (var argument in arguments)
@@ -147,5 +151,15 @@ namespace SOA___Assignment_2___Web_Services
 				}
 			}
 		}
-	}
+
+        private void cmbService_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            populateActions(((ComboBoxItem)cmbService.SelectedItem).Text);
+        }
+
+        private void cmbMethod_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            populateArguments(((ComboBoxItem)cmbService.SelectedItem).Text, ((ComboBoxItem)cmbMethod.SelectedItem).Text);
+        }
+    }
 }
