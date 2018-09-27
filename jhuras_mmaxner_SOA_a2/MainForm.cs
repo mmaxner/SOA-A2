@@ -20,7 +20,7 @@ namespace SOA___Assignment_2___Web_Services
         readonly Point ARGUMENT_LABEL_LOCATION = new Point(110, 95);
         // const int ARGUMENT_LABEL_TOP = 95;
         readonly Size ARGUMENT_LABEL_SIZE = new Size(100, 20);
-        readonly Point ARGUMENT_OFFSET = new Point(0, 30);
+        const int ARGUMENT_VERTICAL_OFFSET = 30;
         //const int ARGUMENT_LABEL_HEIGHT = 20;
         //const int ARGUMENT_LABEL_WIDTH = 100;
         readonly Point ARGUMENT_TEXTBOX_OFFSET = new Point(100, 0);
@@ -51,12 +51,21 @@ namespace SOA___Assignment_2___Web_Services
 
         public void GenerateArgumentControls()
         {
-            for(int i =0; i < CurrentArguments.Count; i++)
+            for (int i = 0; i < CurrentArguments.Count; i++)
             {
                 Label label = new Label();
-                Point a = new Point();
-                Point b = new Point();
-                Point c = a. + b;
+                label.Location = ARGUMENT_LABEL_LOCATION;
+                label.Location.Offset(0, ARGUMENT_VERTICAL_OFFSET * i);
+                label.Size = ARGUMENT_LABEL_SIZE;
+                label.Text = CurrentArguments[i].uiName;
+
+                TextBox text = new TextBox();
+                text.Location = ARGUMENT_LABEL_LOCATION;
+                text.Location.Offset(0, ARGUMENT_VERTICAL_OFFSET);
+                text.Location.Offset(ARGUMENT_TEXTBOX_OFFSET);
+                text.Size = ARGUMENT_TEXTBOX_SIZE;
+                
+                text.DataBindings.Add("Text", CurrentArguments[i], "value");
             }
         }
 
