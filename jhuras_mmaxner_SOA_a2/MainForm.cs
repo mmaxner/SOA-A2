@@ -16,14 +16,26 @@ namespace SOA___Assignment_2___Web_Services
 	public partial class MainForm : System.Windows.Forms.Form
 	{
         const string _CONFIG_FILENAME = "config.xml";
+        //const int ARGUMENT_LABEL_LOCATION = 110;
+        readonly Point ARGUMENT_LABEL_LOCATION = new Point(110, 95);
+        // const int ARGUMENT_LABEL_TOP = 95;
+        readonly Size ARGUMENT_LABEL_SIZE = new Size(100, 20);
+        readonly Point ARGUMENT_OFFSET = new Point(0, 30);
+        //const int ARGUMENT_LABEL_HEIGHT = 20;
+        //const int ARGUMENT_LABEL_WIDTH = 100;
+        readonly Point ARGUMENT_TEXTBOX_OFFSET = new Point(100, 0);
+        readonly Size ARGUMENT_TEXTBOX_SIZE = new Size(150, 20);
+        //const int ARGUMENT_TEXTBOX_LEFT_OFFSET = 110;
+        //const int ARGUMENT_VERTICAL_OFFSET = 30;
         XDocument _soapConfig;
 
+        public List<SOAPArgument> CurrentArguments = new List<SOAPArgument>();
 
         public MainForm()
 		{
 			InitializeComponent();
-            gridArguments.Columns.Add("argumentName", "Argument");
-            gridArguments.Columns.Add("argumentValue", "Value");
+            /*gridArguments.Columns.Add("argumentName", "Argument");
+            gridArguments.Columns.Add("argumentValue", "Value");*/
 
             // load all settings in the xml config file
             loadSoapConfig();
@@ -36,6 +48,17 @@ namespace SOA___Assignment_2___Web_Services
 
             populateArguments(((ComboBoxItem)cmbService.SelectedItem).Text, ((ComboBoxItem)cmbMethod.SelectedItem).Text);
 		}
+
+        public void GenerateArgumentControls()
+        {
+            for(int i =0; i < CurrentArguments.Count; i++)
+            {
+                Label label = new Label();
+                Point a = new Point();
+                Point b = new Point();
+                Point c = a. + b;
+            }
+        }
 
 		private async void btnInvoke_ClickAsync(object sender, EventArgs e)
 		{
@@ -98,11 +121,24 @@ namespace SOA___Assignment_2___Web_Services
 
         private void populateArguments(string serviceName, string methodName)
         {
-            List<string> arguments = _soapConfig.Descendants("services").Elements("service").Elements("name").Where(e => e.Value == serviceName).Ancestors("service").Elements("action").Elements("name").Where(f => f.Value == methodName).Ancestors("action").Elements("parameter").Select(g => g.Value).ToList();
+            List<SOAPArgument> arguments = _soapConfig.Descendants("services")
+                .Elements("service")
+                .Elements("name")
+                .Where(e => e.Value == serviceName)
+                .Ancestors("service")
+                .Elements("action")
+                .Elements("name")
+                .Where(f => f.Value == methodName)
+                .Ancestors("action")
+                .Elements("parameter")
+                .Select(g => new SOAPArgument(g.Element("dataName").Value, g.Element("uiName").Value))
+                .ToList();
+            
+
 
             foreach (var argument in arguments)
             {
-                gridArguments.Rows.Add(argument, string.Empty);
+                gridArguments.Rows.Add(argument.uiName, string.Empty);
             }
         }
 
@@ -147,5 +183,5 @@ namespace SOA___Assignment_2___Web_Services
 				}
 			}
 		}
-	}
+    }
 }

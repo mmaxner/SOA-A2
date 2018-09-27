@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmbService = new System.Windows.Forms.ComboBox();
             this.cmbMethod = new System.Windows.Forms.ComboBox();
             this.lblService = new System.Windows.Forms.Label();
@@ -37,50 +38,57 @@
             this.btnInvoke = new System.Windows.Forms.Button();
             this.lblParameters = new System.Windows.Forms.Label();
             this.gridArguments = new System.Windows.Forms.DataGridView();
+            this.sOAPArgumentBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridArguments)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sOAPArgumentBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // cmbService
             // 
             this.cmbService.FormattingEnabled = true;
-            this.cmbService.Location = new System.Drawing.Point(75, 12);
+            this.cmbService.Location = new System.Drawing.Point(100, 15);
+            this.cmbService.Margin = new System.Windows.Forms.Padding(4);
             this.cmbService.Name = "cmbService";
-            this.cmbService.Size = new System.Drawing.Size(121, 21);
+            this.cmbService.Size = new System.Drawing.Size(160, 24);
             this.cmbService.TabIndex = 0;
             // 
             // cmbMethod
             // 
             this.cmbMethod.FormattingEnabled = true;
-            this.cmbMethod.Location = new System.Drawing.Point(75, 39);
+            this.cmbMethod.Location = new System.Drawing.Point(100, 48);
+            this.cmbMethod.Margin = new System.Windows.Forms.Padding(4);
             this.cmbMethod.Name = "cmbMethod";
-            this.cmbMethod.Size = new System.Drawing.Size(121, 21);
+            this.cmbMethod.Size = new System.Drawing.Size(160, 24);
             this.cmbMethod.TabIndex = 1;
             // 
             // lblService
             // 
             this.lblService.AutoSize = true;
-            this.lblService.Location = new System.Drawing.Point(26, 15);
+            this.lblService.Location = new System.Drawing.Point(35, 18);
+            this.lblService.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblService.Name = "lblService";
-            this.lblService.Size = new System.Drawing.Size(43, 13);
+            this.lblService.Size = new System.Drawing.Size(55, 17);
             this.lblService.TabIndex = 2;
             this.lblService.Text = "Service";
             // 
             // lblMethod
             // 
             this.lblMethod.AutoSize = true;
-            this.lblMethod.Location = new System.Drawing.Point(26, 42);
+            this.lblMethod.Location = new System.Drawing.Point(35, 52);
+            this.lblMethod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMethod.Name = "lblMethod";
-            this.lblMethod.Size = new System.Drawing.Size(43, 13);
+            this.lblMethod.Size = new System.Drawing.Size(55, 17);
             this.lblMethod.TabIndex = 3;
             this.lblMethod.Text = "Method";
             // 
             // lblResponse
             // 
             this.lblResponse.AutoSize = true;
-            this.lblResponse.Location = new System.Drawing.Point(14, 254);
+            this.lblResponse.Location = new System.Drawing.Point(19, 313);
+            this.lblResponse.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblResponse.Name = "lblResponse";
-            this.lblResponse.Size = new System.Drawing.Size(55, 13);
+            this.lblResponse.Size = new System.Drawing.Size(72, 17);
             this.lblResponse.TabIndex = 4;
             this.lblResponse.Text = "Response";
             // 
@@ -89,17 +97,19 @@
             this.gridResponse.AllowUserToAddRows = false;
             this.gridResponse.AllowUserToDeleteRows = false;
             this.gridResponse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridResponse.Location = new System.Drawing.Point(75, 254);
+            this.gridResponse.Location = new System.Drawing.Point(100, 313);
+            this.gridResponse.Margin = new System.Windows.Forms.Padding(4);
             this.gridResponse.Name = "gridResponse";
             this.gridResponse.ReadOnly = true;
-            this.gridResponse.Size = new System.Drawing.Size(397, 150);
+            this.gridResponse.Size = new System.Drawing.Size(529, 185);
             this.gridResponse.TabIndex = 4;
             // 
             // btnInvoke
             // 
-            this.btnInvoke.Location = new System.Drawing.Point(75, 225);
+            this.btnInvoke.Location = new System.Drawing.Point(100, 277);
+            this.btnInvoke.Margin = new System.Windows.Forms.Padding(4);
             this.btnInvoke.Name = "btnInvoke";
-            this.btnInvoke.Size = new System.Drawing.Size(75, 23);
+            this.btnInvoke.Size = new System.Drawing.Size(100, 28);
             this.btnInvoke.TabIndex = 3;
             this.btnInvoke.Text = "Invoke";
             this.btnInvoke.UseVisualStyleBackColor = true;
@@ -108,9 +118,10 @@
             // lblParameters
             // 
             this.lblParameters.AutoSize = true;
-            this.lblParameters.Location = new System.Drawing.Point(12, 69);
+            this.lblParameters.Location = new System.Drawing.Point(16, 85);
+            this.lblParameters.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblParameters.Name = "lblParameters";
-            this.lblParameters.Size = new System.Drawing.Size(57, 13);
+            this.lblParameters.Size = new System.Drawing.Size(76, 17);
             this.lblParameters.TabIndex = 7;
             this.lblParameters.Text = "Arguments";
             // 
@@ -119,16 +130,21 @@
             this.gridArguments.AllowUserToAddRows = false;
             this.gridArguments.AllowUserToDeleteRows = false;
             this.gridArguments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridArguments.Location = new System.Drawing.Point(75, 69);
+            this.gridArguments.Location = new System.Drawing.Point(570, 85);
+            this.gridArguments.Margin = new System.Windows.Forms.Padding(4);
             this.gridArguments.Name = "gridArguments";
-            this.gridArguments.Size = new System.Drawing.Size(397, 150);
+            this.gridArguments.Size = new System.Drawing.Size(59, 185);
             this.gridArguments.TabIndex = 2;
+            // 
+            // sOAPArgumentBindingSource
+            // 
+            this.sOAPArgumentBindingSource.DataSource = typeof(SOA___Assignment_2___Web_Services.SOAPArgument);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 414);
+            this.ClientSize = new System.Drawing.Size(645, 510);
             this.Controls.Add(this.gridArguments);
             this.Controls.Add(this.lblParameters);
             this.Controls.Add(this.btnInvoke);
@@ -138,10 +154,12 @@
             this.Controls.Add(this.lblService);
             this.Controls.Add(this.cmbMethod);
             this.Controls.Add(this.cmbService);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Assignment 2 - Web Services";
             ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridArguments)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sOAPArgumentBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -158,6 +176,7 @@
 		private System.Windows.Forms.Button btnInvoke;
 		private System.Windows.Forms.Label lblParameters;
         private System.Windows.Forms.DataGridView gridArguments;
+        private System.Windows.Forms.BindingSource sOAPArgumentBindingSource;
     }
 }
 

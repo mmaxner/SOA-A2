@@ -9,8 +9,22 @@ using System.IO;
 
 namespace SOA___Assignment_2___Web_Services
 {
-	//https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
-	public class WebServiceFramework
+    public struct SOAPArgument
+    {
+        public string dataName;
+        public string uiName;
+        public string value;
+
+        public SOAPArgument(string dataNameIn, string uiNameIn)
+        {
+            dataName = dataNameIn;
+            uiName = uiNameIn;
+            value = "";
+        }
+    }
+
+    //https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
+    public class WebServiceFramework
 	{
 		public static string CallWebService(string url, string action)
 		{

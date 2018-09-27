@@ -1,0 +1,9 @@
+<services>
+	<service>
+		<name>Calculator</name>
+		<url>http://www.dneonline.com/calculator.asmx</url>
+		<action>Add</action>
+		<parameter>intA</parameter>
+		<parameter>intB</parameter>
+	</service>
+</services>
