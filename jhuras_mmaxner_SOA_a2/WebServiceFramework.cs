@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using System.Net;
 using System.IO;
 
 namespace SOA___Assignment_2___Web_Services
 {
-    public struct SOAPArgument
+    public class SOAPArgument
     {
-        public string dataName;
-        public string uiName;
-        public string value;
+        public string dataName { get; set; }
+        public string uiName { get; set; }
+        public string value { get; set; }
 
         public SOAPArgument(string dataNameIn, string uiNameIn)
         {
@@ -26,10 +27,10 @@ namespace SOA___Assignment_2___Web_Services
     //https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
     public class WebServiceFramework
 	{
-		public static string CallWebService(string url, string action)
+		public static string CallWebService(string url, string action, List<SOAPArgument> parameters)
 		{
 			string soapResult = string.Empty;
-			XmlDocument soapEnvelopeXml = CreateSoapEnvelope(action);
+			XmlDocument soapEnvelopeXml = CreateSoapEnvelope(action, parameters);
 			HttpWebRequest webRequest = CreateWebRequest(url, action);
 			InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
 
@@ -66,7 +67,7 @@ namespace SOA___Assignment_2___Web_Services
 			return webRequest;
 		}
 
-		private static XmlDocument CreateSoapEnvelope(string action)
+		private static XmlDocument CreateSoapEnvelope(string action, List<SOAPArgument> parameters)
 		{
 			XmlDocument soapEnvelopeDocument = new XmlDocument();
 			string loadXmlData =
@@ -76,8 +77,10 @@ namespace SOA___Assignment_2___Web_Services
 			loadXmlData += string.Format(@"<{0} xmlns=""http://tempuri.org/"">", action);
 
 			// do this part in a for loop for however many arguments we need?
-			loadXmlData += @"<intA>12</intA>
-							<intB>32</intB>";
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                loadXmlData +=  string.Format("<{0}>{1}</{0}>", parameters[i].dataName, parameters[i].value);
+            }
 			loadXmlData += string.Format(@"</{0}>", action);
 			loadXmlData +=
 					@"</soap:Body>

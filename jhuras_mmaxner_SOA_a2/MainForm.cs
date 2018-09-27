@@ -16,20 +16,15 @@ namespace SOA___Assignment_2___Web_Services
 	public partial class MainForm : System.Windows.Forms.Form
 	{
         const string _CONFIG_FILENAME = "config.xml";
-        //const int ARGUMENT_LABEL_LOCATION = 110;
-        readonly Point ARGUMENT_LABEL_LOCATION = new Point(110, 95);
-        // const int ARGUMENT_LABEL_TOP = 95;
+        readonly Point ARGUMENT_LABEL_LOCATION = new Point(10, 15);
         readonly Size ARGUMENT_LABEL_SIZE = new Size(100, 20);
-        const int ARGUMENT_VERTICAL_OFFSET = 30;
-        //const int ARGUMENT_LABEL_HEIGHT = 20;
-        //const int ARGUMENT_LABEL_WIDTH = 100;
-        readonly Point ARGUMENT_TEXTBOX_OFFSET = new Point(100, 0);
+        readonly Size ARGUMENT_OFFSET = new Size(0, 30);
+        readonly Size ARGUMENT_TEXTBOX_OFFSET = new Size(100, 0);
         readonly Size ARGUMENT_TEXTBOX_SIZE = new Size(150, 20);
-        //const int ARGUMENT_TEXTBOX_LEFT_OFFSET = 110;
-        //const int ARGUMENT_VERTICAL_OFFSET = 30;
         XDocument _soapConfig;
 
-        public List<SOAPArgument> CurrentArguments = new List<SOAPArgument>();
+        public static List<SOAPArgument> CurrentArguments = new List<SOAPArgument>();
+        public static SOAPArgument soap = new SOAPArgument("intC", "3rd Number");
 
         public MainForm()
 		{
@@ -52,24 +47,28 @@ namespace SOA___Assignment_2___Web_Services
 
         public void GenerateArgumentControls()
         {
+            grpArgumentControls.Controls.Clear();
             for (int i = 0; i < CurrentArguments.Count; i++)
             {
                 Label label = new Label();
-                label.Location = ARGUMENT_LABEL_LOCATION;
-                label.Location.Offset(0, ARGUMENT_VERTICAL_OFFSET * i);
+                Point location = ARGUMENT_LABEL_LOCATION;
+                for ( int j = 0; j < i; j++)
+                {
+                    location += ARGUMENT_OFFSET;
+                }
+                label.Location = location;
                 label.Size = ARGUMENT_LABEL_SIZE;
                 label.Text = CurrentArguments[i].uiName;
 
                 TextBox text = new TextBox();
-                text.Location = ARGUMENT_LABEL_LOCATION;
-                text.Location.Offset(0, ARGUMENT_VERTICAL_OFFSET);
-                text.Location.Offset(ARGUMENT_TEXTBOX_OFFSET);
+                text.Location = location + ARGUMENT_TEXTBOX_OFFSET;
                 text.Size = ARGUMENT_TEXTBOX_SIZE;
                 
                 text.DataBindings.Add("Text", CurrentArguments[i], "value");
 
-                this.Controls.Add(label);
-                this.Controls.Add(text);
+                
+                grpArgumentControls.Controls.Add(label);
+                grpArgumentControls.Controls.Add(text);
             }
         }
 
@@ -77,9 +76,8 @@ namespace SOA___Assignment_2___Web_Services
 		{
             string url = (cmbService.SelectedItem as ComboBoxItem).Value;
             string action = (cmbMethod.SelectedItem as ComboBoxItem).Value;
-            //List<string> parameters = txtArguments.Text.Split(',').OfType<string>().ToList(); // convert parameters to separated list
 
-            string result = WebServiceFramework.CallWebService(url, action);
+            string result = WebServiceFramework.CallWebService(url, action, CurrentArguments);
 			if (!string.IsNullOrEmpty(result))
 			{
 				using (Stream resultStream = GenerateStreamFromString(result))
@@ -184,6 +182,7 @@ namespace SOA___Assignment_2___Web_Services
 						case XmlNodeType.Text:
 							Console.WriteLine("Text Node: {0}",
 									 await reader.GetValueAsync());
+                            gridResponse.Rows.Add(await reader.GetValueAsync());
 							break;
 						case XmlNodeType.EndElement:
 							Console.WriteLine("End Element {0}", reader.Name);

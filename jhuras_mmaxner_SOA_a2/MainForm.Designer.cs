@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.cmbService = new System.Windows.Forms.ComboBox();
             this.cmbMethod = new System.Windows.Forms.ComboBox();
             this.lblService = new System.Windows.Forms.Label();
@@ -36,12 +35,11 @@
             this.lblResponse = new System.Windows.Forms.Label();
             this.gridResponse = new System.Windows.Forms.DataGridView();
             this.btnInvoke = new System.Windows.Forms.Button();
-            this.lblParameters = new System.Windows.Forms.Label();
             this.gridArguments = new System.Windows.Forms.DataGridView();
-            this.sOAPArgumentBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.grpArgumentControls = new System.Windows.Forms.GroupBox();
+            this.Results = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridArguments)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sOAPArgumentBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // cmbService
@@ -97,6 +95,8 @@
             this.gridResponse.AllowUserToAddRows = false;
             this.gridResponse.AllowUserToDeleteRows = false;
             this.gridResponse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridResponse.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Results});
             this.gridResponse.Location = new System.Drawing.Point(100, 313);
             this.gridResponse.Margin = new System.Windows.Forms.Padding(4);
             this.gridResponse.Name = "gridResponse";
@@ -115,16 +115,6 @@
             this.btnInvoke.UseVisualStyleBackColor = true;
             this.btnInvoke.Click += new System.EventHandler(this.btnInvoke_ClickAsync);
             // 
-            // lblParameters
-            // 
-            this.lblParameters.AutoSize = true;
-            this.lblParameters.Location = new System.Drawing.Point(16, 85);
-            this.lblParameters.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblParameters.Name = "lblParameters";
-            this.lblParameters.Size = new System.Drawing.Size(76, 17);
-            this.lblParameters.TabIndex = 7;
-            this.lblParameters.Text = "Arguments";
-            // 
             // gridArguments
             // 
             this.gridArguments.AllowUserToAddRows = false;
@@ -136,17 +126,28 @@
             this.gridArguments.Size = new System.Drawing.Size(59, 185);
             this.gridArguments.TabIndex = 2;
             // 
-            // sOAPArgumentBindingSource
+            // grpArgumentControls
             // 
-            this.sOAPArgumentBindingSource.DataSource = typeof(SOA___Assignment_2___Web_Services.SOAPArgument);
+            this.grpArgumentControls.Location = new System.Drawing.Point(38, 85);
+            this.grpArgumentControls.Name = "grpArgumentControls";
+            this.grpArgumentControls.Size = new System.Drawing.Size(515, 185);
+            this.grpArgumentControls.TabIndex = 8;
+            this.grpArgumentControls.TabStop = false;
+            this.grpArgumentControls.Text = "Arguments";
+            // 
+            // Results
+            // 
+            this.Results.HeaderText = "Results";
+            this.Results.Name = "Results";
+            this.Results.ReadOnly = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(645, 510);
+            this.Controls.Add(this.grpArgumentControls);
             this.Controls.Add(this.gridArguments);
-            this.Controls.Add(this.lblParameters);
             this.Controls.Add(this.btnInvoke);
             this.Controls.Add(this.gridResponse);
             this.Controls.Add(this.lblResponse);
@@ -159,7 +160,6 @@
             this.Text = "Assignment 2 - Web Services";
             ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridArguments)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sOAPArgumentBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -174,9 +174,9 @@
         private System.Windows.Forms.Label lblResponse;
         private System.Windows.Forms.DataGridView gridResponse;
 		private System.Windows.Forms.Button btnInvoke;
-		private System.Windows.Forms.Label lblParameters;
         private System.Windows.Forms.DataGridView gridArguments;
-        private System.Windows.Forms.BindingSource sOAPArgumentBindingSource;
+        private System.Windows.Forms.GroupBox grpArgumentControls;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Results;
     }
 }
 

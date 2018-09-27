@@ -4,6 +4,18 @@
     <url>http://www.dneonline.com/calculator.asmx</url>
     <action>
       <name>Add</name>
+        <dataName></dataName>
+        <parameter>
+          <dataName>intA</dataName>
+          <uiName>1st Number</uiName>
+        </parameter>
+        <parameter>
+          <dataName>intB</dataName>
+          <uiName>2nd Number</uiName>
+        </parameter>
+    </action>
+    <action>
+      <name>Subtract</name>
       <parameter>
         <dataName>intA</dataName>
         <uiName>1st Number</uiName>
@@ -13,5 +25,48 @@
         <uiName>2nd Number</uiName>
       </parameter>
     </action>
+    <action>
+      <name>Multiply</name>
+      <parameter>
+        <dataName>intA</dataName>
+        <uiName>1st Number</uiName>
+      </parameter>
+      <parameter>
+        <dataName>intB</dataName>
+        <uiName>2nd Number</uiName>
+      </parameter>
+    </action>
+    <action>
+      <name>Divide</name>
+      <parameter>
+        <dataName>intA</dataName>
+        <uiName>1st Number</uiName>
+      </parameter>
+      <parameter>
+        <dataName>intB</dataName>
+        <uiName>2nd Number</uiName>
+      </parameter>
+    </action>
+  </service>
+
+  <service>
+    <name>Currency Converter</name>
+    <url>http://currencyconverter.kowabunga.net/converter.asmx</url>
+    <action>
+      <name>GetCurrencyRate</name>
+      <dataName></dataName>
+      <parameter>
+        <dataName>Currency</dataName>
+        <uiName>Currency</uiName>
+      </parameter>
+      <parameter>
+        <dataName>RateDate</dataName>
+        <uiName>Date</uiName>
+      </parameter>
+    </action>
+    <action>
+      <name>GetCurrencies</name>
+    </action>
+   
   </service>
 </services>
