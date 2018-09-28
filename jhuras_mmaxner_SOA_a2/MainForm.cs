@@ -48,7 +48,9 @@ namespace SOA___Assignment_2___Web_Services
 
         public void GenerateArgumentControls()
         {
-            _currentServiceNamespace = _soapConfig
+            try
+            {
+                _currentServiceNamespace = _soapConfig
                 .Descendants("services")
                 .Elements("service")
                 .Elements("name")
@@ -58,95 +60,116 @@ namespace SOA___Assignment_2___Web_Services
                 .Select(y => y.Value)
                 .FirstOrDefault();
 
-            grpArgumentControls.Controls.Clear();
-            for (int i = 0; i < CurrentArguments.Count; i++)
-            {
-                Label label = new Label();
-                Point location = ARGUMENT_LABEL_LOCATION;
-                for ( int j = 0; j < i; j++)
+                grpArgumentControls.Controls.Clear();
+                for (int i = 0; i < CurrentArguments.Count; i++)
                 {
-                    location += ARGUMENT_OFFSET;
+                    Label label = new Label();
+                    Point location = ARGUMENT_LABEL_LOCATION;
+                    for (int j = 0; j < i; j++)
+                    {
+                        location += ARGUMENT_OFFSET;
+                    }
+                    label.Location = location;
+                    label.Size = ARGUMENT_LABEL_SIZE;
+                    label.Text = CurrentArguments[i].uiName;
+
+                    Control control = null;
+
+                    switch (CurrentArguments[i].type)
+                    {
+                        case "list":
+                            ComboBox womboCombo = new ComboBox();
+
+                            string XMLList = WebServiceFramework.CallWebService(
+                                (cmbService.SelectedItem as ComboBoxItem).Value,
+                                CurrentArguments[i].listSource.serviceName,
+                                new List<SOAPArgument>(),
+                                _currentServiceNamespace);
+
+                            BindingSource bindingSource1 = new BindingSource();
+                            XDocument docList = XDocument.Parse(XMLList);
+                            IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.dataMember);
+                            IEnumerable<XElement> displayList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.displayMember);
+
+                            Dictionary<string, string> dataSource = new Dictionary<string, string>();
+
+                            for (int j = 0; j < dataList.Count(); j++)
+                            {
+                                dataSource.Add(dataList.ElementAt(j).Value
+                                    , displayList.ElementAt(j).Value);
+                            }
+
+                            bindingSource1.DataSource = dataSource;
+                            womboCombo.DataSource = bindingSource1;
+                            womboCombo.DisplayMember = "Value";
+                            womboCombo.ValueMember = "Key";
+
+                            womboCombo.DataBindings.Add("SelectedValue", CurrentArguments[i], "value");
+
+                            control = womboCombo;
+                            break;
+                        case "date":
+                            DateTimePicker dicker = new DateTimePicker();
+                            dicker.Format = DateTimePickerFormat.Custom;
+                            dicker.CustomFormat = "yyyy-mm-dd";
+                            CurrentArguments[i].value = DateTime.Now.ToString("yyyy-mm-dd");
+
+                            dicker.DataBindings.Add("Value", CurrentArguments[i], "value", true);
+
+                            control = dicker;
+                            break;
+                        case "int":
+                            NumericUpDown cuckDown = new NumericUpDown();
+                            cuckDown.Minimum = int.MinValue;
+                            cuckDown.Maximum = int.MaxValue;
+                            CurrentArguments[i].value = "0";
+
+                            cuckDown.DataBindings.Add("Value", CurrentArguments[i], "value", true, DataSourceUpdateMode.OnPropertyChanged);
+                            control = cuckDown;
+                            break;
+                        case "string":
+                        default:
+                            TextBox text = new TextBox();
+                            text.DataBindings.Add("Text", CurrentArguments[i], "value");
+                            control = text;
+                            break;
+                    }
+
+                    control.Location = location + ARGUMENT_TEXTBOX_OFFSET;
+                    control.Size = ARGUMENT_TEXTBOX_SIZE;
+
+                    grpArgumentControls.Controls.Add(label);
+                    grpArgumentControls.Controls.Add(control);
                 }
-                label.Location = location;
-                label.Size = ARGUMENT_LABEL_SIZE;
-                label.Text = CurrentArguments[i].uiName;
-
-                Control control = null;
-
-                switch (CurrentArguments[i].type)
-                {
-                    case "list":
-                        ComboBox womboCombo = new ComboBox();
-
-                        string XMLList = WebServiceFramework.CallWebService(
-                            (cmbService.SelectedItem as ComboBoxItem).Value,
-                            CurrentArguments[i].listSource.serviceName,
-                            new List<SOAPArgument>(),
-                            _currentServiceNamespace);
-                        
-                        BindingSource bindingSource1 = new BindingSource();
-                        XDocument docList = XDocument.Parse(XMLList);
-                        IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.dataMember);
-                        IEnumerable<XElement> displayList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.displayMember);
-
-                        Dictionary<string, string> dataSource = new Dictionary<string, string>();
-
-                        for (int j = 0; j < dataList.Count(); j++)
-                        {
-                            dataSource.Add(dataList.ElementAt(j).Value
-                                , displayList.ElementAt(j).Value);
-                        }
-
-                        bindingSource1.DataSource = dataSource;
-                        womboCombo.DataSource = bindingSource1;
-                        womboCombo.DisplayMember = "Value";
-                        womboCombo.ValueMember = "Key";
-
-                        womboCombo.DataBindings.Add("SelectedValue", CurrentArguments[i], "value");
-
-                        control = womboCombo;
-                        break;
-                    case "date":
-                        DateTimePicker dicker = new DateTimePicker();
-                        dicker.Format = DateTimePickerFormat.Custom;
-                        dicker.CustomFormat = "yyyy-mm-dd";
-                        CurrentArguments[i].value = DateTime.Now.ToString("yyyy-mm-dd");
-
-                        dicker.DataBindings.Add("Value", CurrentArguments[i], "value", true);
-
-                        control = dicker;
-                        break;
-                    case "int":
-                    case "string":
-                    default:
-                        TextBox text = new TextBox();
-                        text.DataBindings.Add("Text", CurrentArguments[i], "value");
-                        control = text;
-                        break;
-                }
-
-                control.Location = location + ARGUMENT_TEXTBOX_OFFSET;
-                control.Size = ARGUMENT_TEXTBOX_SIZE;
-
-                grpArgumentControls.Controls.Add(label);
-                grpArgumentControls.Controls.Add(control);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Error connecting to SOAP service", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+            }
+            
         }
 
 		private async void btnInvoke_ClickAsync(object sender, EventArgs e)
 		{
-            string url = (cmbService.SelectedItem as ComboBoxItem).Value;
-            string action = (cmbMethod.SelectedItem as ComboBoxItem).Value;
+            try
+            {
+                string url = (cmbService.SelectedItem as ComboBoxItem).Value;
+                string action = (cmbMethod.SelectedItem as ComboBoxItem).Value;
 
-            string result = WebServiceFramework.CallWebService(url, action, CurrentArguments, _currentServiceNamespace);
-            if (!string.IsNullOrEmpty(result))
-                txtResults.Clear();
-			{
-				using (Stream resultStream = GenerateStreamFromString(result))
-				{
-					await parseXML(resultStream);
-				}
-			}
+                string result = WebServiceFramework.CallWebService(url, action, CurrentArguments, _currentServiceNamespace);
+                if (!string.IsNullOrEmpty(result))
+                    txtResults.Clear();
+                {
+                    using (Stream resultStream = GenerateStreamFromString(result))
+                    {
+                        await parseXML(resultStream);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Error connecting to SOAP service", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+            }
 		}
 
         private void loadSoapConfig()
@@ -154,11 +177,10 @@ namespace SOA___Assignment_2___Web_Services
             try
             {
                 _soapConfig = XDocument.Load(_CONFIG_FILENAME);
-
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK);
+                MessageBox.Show(ex.Message, "Error loading SOAP config file", MessageBoxButtons.OK);
             }
         }
 
