@@ -15,13 +15,15 @@ namespace SOA___Assignment_2___Web_Services
 {
 	public partial class MainForm : System.Windows.Forms.Form
 	{
-        const string _CONFIG_FILENAME = "config.xml";
-        readonly Point ARGUMENT_LABEL_LOCATION = new Point(10, 15);
-        readonly Size ARGUMENT_LABEL_SIZE = new Size(100, 20);
-        readonly Size ARGUMENT_OFFSET = new Size(0, 30);
-        readonly Size ARGUMENT_TEXTBOX_OFFSET = new Size(100, 0);
-        readonly Size ARGUMENT_TEXTBOX_SIZE = new Size(150, 20);
-        XDocument _soapConfig;
+        private readonly string _CONFIG_FILENAME = "config.xml";
+        private readonly Point ARGUMENT_LABEL_LOCATION = new Point(10, 15);
+        private readonly Size ARGUMENT_LABEL_SIZE = new Size(100, 20);
+        private readonly Size ARGUMENT_OFFSET = new Size(0, 30);
+        private readonly Size ARGUMENT_TEXTBOX_OFFSET = new Size(100, 0);
+        private readonly Size ARGUMENT_TEXTBOX_SIZE = new Size(150, 20);
+
+        private string _currentServiceNamespace;
+        private XDocument _soapConfig;
 
         public static List<SOAPArgument> CurrentArguments = new List<SOAPArgument>();
 
@@ -66,9 +68,12 @@ namespace SOA___Assignment_2___Web_Services
                     case "list":
                         ComboBox womboCombo = new ComboBox();
 
-                        string XMLList = WebServiceFramework.CallWebService((cmbService.SelectedItem as ComboBoxItem).Value, CurrentArguments[i].listSource.serviceName, new List<SOAPArgument>());
+                        string XMLList = WebServiceFramework.CallWebService(
+                            (cmbService.SelectedItem as ComboBoxItem).Value,
+                            CurrentArguments[i].listSource.serviceName,
+                            new List<SOAPArgument>(),
+                            _currentServiceNamespace);
                         
-
                         BindingSource bindingSource1 = new BindingSource();
                         XDocument docList = XDocument.Parse(XMLList);
                         IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.dataMember);
@@ -120,7 +125,7 @@ namespace SOA___Assignment_2___Web_Services
             string url = (cmbService.SelectedItem as ComboBoxItem).Value;
             string action = (cmbMethod.SelectedItem as ComboBoxItem).Value;
 
-            string result = WebServiceFramework.CallWebService(url, action, CurrentArguments);
+            string result = WebServiceFramework.CallWebService(url, action, CurrentArguments, _currentServiceNamespace);
 			if (!string.IsNullOrEmpty(result))
 			{
 				using (Stream resultStream = GenerateStreamFromString(result))
@@ -162,7 +167,14 @@ namespace SOA___Assignment_2___Web_Services
 		{
             cmbMethod.Items.Clear();
 
-            List<string> actions = _soapConfig.Descendants("services").Elements("service").Elements("name").Where(e => e.Value == serviceName).Ancestors("service").Elements("action").Elements("name").Select(f => f.Value).ToList();
+            List<string> actions = _soapConfig.Descendants("services")
+                .Elements("service")
+                .Elements("name")
+                .Where(e => e.Value == serviceName)
+                .Ancestors("service")
+                .Elements("action")
+                .Elements("name")
+                .Select(f => f.Value).ToList();
 
             foreach (var action in actions)
             {
@@ -250,7 +262,9 @@ namespace SOA___Assignment_2___Web_Services
 		}
         private void cmbService_SelectedIndexChanged(object sender, EventArgs e)
         {
-            populateActions(((ComboBoxItem)cmbService.SelectedItem).Text);
+            string serviceName = ((ComboBoxItem)cmbService.SelectedItem).Text;
+            populateActions(serviceName);
+            _currentServiceNamespace = _soapConfig.Descendants("services").Elements("service").Elements("name").Where(x => x.Value == serviceName).Ancestors("service").Elements("namespace").Select(y => y.Value).FirstOrDefault();
         }
 
         private void cmbMethod_SelectedIndexChanged(object sender, EventArgs e)
