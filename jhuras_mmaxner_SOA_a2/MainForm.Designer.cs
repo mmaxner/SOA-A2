@@ -36,10 +36,8 @@
             this.gridResponse = new System.Windows.Forms.DataGridView();
             this.Results = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnInvoke = new System.Windows.Forms.Button();
-            this.gridArguments = new System.Windows.Forms.DataGridView();
             this.grpArgumentControls = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridArguments)).BeginInit();
             this.SuspendLayout();
             // 
             // cmbService
@@ -123,22 +121,11 @@
             this.btnInvoke.UseVisualStyleBackColor = true;
             this.btnInvoke.Click += new System.EventHandler(this.btnInvoke_ClickAsync);
             // 
-            // gridArguments
-            // 
-            this.gridArguments.AllowUserToAddRows = false;
-            this.gridArguments.AllowUserToDeleteRows = false;
-            this.gridArguments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridArguments.Location = new System.Drawing.Point(570, 85);
-            this.gridArguments.Margin = new System.Windows.Forms.Padding(4);
-            this.gridArguments.Name = "gridArguments";
-            this.gridArguments.Size = new System.Drawing.Size(59, 185);
-            this.gridArguments.TabIndex = 2;
-            // 
             // grpArgumentControls
             // 
             this.grpArgumentControls.Location = new System.Drawing.Point(38, 85);
             this.grpArgumentControls.Name = "grpArgumentControls";
-            this.grpArgumentControls.Size = new System.Drawing.Size(515, 185);
+            this.grpArgumentControls.Size = new System.Drawing.Size(591, 185);
             this.grpArgumentControls.TabIndex = 8;
             this.grpArgumentControls.TabStop = false;
             this.grpArgumentControls.Text = "Arguments";
@@ -149,7 +136,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(645, 510);
             this.Controls.Add(this.grpArgumentControls);
-            this.Controls.Add(this.gridArguments);
             this.Controls.Add(this.btnInvoke);
             this.Controls.Add(this.gridResponse);
             this.Controls.Add(this.lblResponse);
@@ -161,7 +147,6 @@
             this.Name = "MainForm";
             this.Text = "Assignment 2 - Web Services";
             ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridArguments)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -176,7 +161,6 @@
         private System.Windows.Forms.Label lblResponse;
         private System.Windows.Forms.DataGridView gridResponse;
 		private System.Windows.Forms.Button btnInvoke;
-        private System.Windows.Forms.DataGridView gridArguments;
         private System.Windows.Forms.GroupBox grpArgumentControls;
         private System.Windows.Forms.DataGridViewTextBoxColumn Results;
     }
