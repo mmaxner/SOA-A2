@@ -2,6 +2,7 @@
   <service>
     <name>Calculator</name>
     <url>http://www.dneonline.com/calculator.asmx</url>
+	<namespace>http://tempuri.org/</namespace>
     <action>
       <name>Add</name>
         <dataName></dataName>
@@ -60,6 +61,7 @@
   <service>
     <name>Currency Converter</name>
     <url>http://currencyconverter.kowabunga.net/converter.asmx</url>
+	<namespace>http://tempuri.org/</namespace>
     <action>
       <name>GetCurrencyRate</name>
       <dataName></dataName>
@@ -84,35 +86,35 @@
 	<service>
 		<name>Dictionary</name>
 		<url>http://services.aonaware.com/DictService/DictService.asmx</url>
-    <namespace>http://services.aonaware.com/webservices/</namespace>
+		<namespace>http://services.aonaware.com/webservices/</namespace>
 		<action>
 			<name>Define</name>
 			<parameter>
-        <type>string</type>
-        <dataName>word</dataName>
-        <uiName>Word</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>word</dataName>
+				<uiName>Word</uiName>
+			</parameter>
 		</action>
 		<action>
 			<name>DefineInDict</name>
 			<parameter>
-        <type>string</type>
-        <dataName>dictId</dataName>
-        <uiName>Dictionary Id</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>dictId</dataName>
+				<uiName>Dictionary Id</uiName>
+			</parameter>
 			<parameter>
-        <type>string</type>
-        <dataName>word</dataName>
-        <uiName>Word</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>word</dataName>
+				<uiName>Word</uiName>
+			</parameter>
 		</action>
 		<action>
 			<name>DictionaryInfo</name>
 			<parameter>
-        <type>string</type>
-        <dataName>dictId</dataName>
-        <uiName>Dictionary Id</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>dictId</dataName>
+				<uiName>Dictionary Id</uiName>
+			</parameter>
 		</action>
 		<action>
 			<name>DictionaryList</name>
@@ -123,33 +125,33 @@
 		<action>
 			<name>Match</name>
 			<parameter>
-        <type>string</type>
-        <dataName>word</dataName>
-        <uiName>Word</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>word</dataName>
+				<uiName>Word</uiName>
+			</parameter>
 			<parameter>
-        <type>string</type>
-        <dataName>strategy</dataName>
-        <uiName>Strategy</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>strategy</dataName>
+				<uiName>Strategy</uiName>
+			</parameter>
 		</action>
 		<action>
 			<name>MatchInDict</name>
 			<parameter>
-        <type>string</type>
-        <dataName>dictId</dataName>
-        <uiName>Dictionary Id</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>dictId</dataName>
+				<uiName>Dictionary Id</uiName>
+			</parameter>
 			<parameter>
         <type>string</type>
         <dataName>word</dataName>
         <uiName>Word</uiName>
         </parameter>
 			<parameter>
-        <type>string</type>
-        <dataName>strategy</dataName>
-        <uiName>Strategy</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>strategy</dataName>
+				<uiName>Strategy</uiName>
+			</parameter>
 		</action>
 		<action>
 			<name>ServerInfo</name>

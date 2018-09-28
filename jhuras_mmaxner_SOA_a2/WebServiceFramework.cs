@@ -43,11 +43,11 @@ namespace SOA___Assignment_2___Web_Services
     //https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
     public class WebServiceFramework
 	{
-		public static string CallWebService(string url, string action, List<SOAPArgument> parameters)
+		public static string CallWebService(string url, string action, List<SOAPArgument> parameters, string serviceNamespace)
 		{
 			string soapResult = string.Empty;
-			XmlDocument soapEnvelopeXml = CreateSoapEnvelope(action, parameters);
-			HttpWebRequest webRequest = CreateWebRequest(url, action);
+			XmlDocument soapEnvelopeXml = CreateSoapEnvelope(action, parameters, serviceNamespace);
+			HttpWebRequest webRequest = CreateWebRequest(url, action, serviceNamespace);
 			InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
 
 			// begin async call to web request.
@@ -73,24 +73,24 @@ namespace SOA___Assignment_2___Web_Services
 			return soapResult;
 		}
 
-		private static HttpWebRequest CreateWebRequest(string url, string action)
+		private static HttpWebRequest CreateWebRequest(string url, string action, string serviceNamespace)
 		{
 			HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-			webRequest.Headers.Add("SOAPAction", "http://tempuri.org/" + action);
+			webRequest.Headers.Add("SOAPAction", serviceNamespace + action);
 			webRequest.ContentType = "text/xml;charset=\"utf-8\"";
 			webRequest.Accept = "text/xml";
 			webRequest.Method = "POST";
 			return webRequest;
 		}
 
-		private static XmlDocument CreateSoapEnvelope(string action, List<SOAPArgument> parameters)
+		private static XmlDocument CreateSoapEnvelope(string action, List<SOAPArgument> parameters, string serviceNamespace)
 		{
 			XmlDocument soapEnvelopeDocument = new XmlDocument();
 			string loadXmlData =
 				@"<soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
 					<soap:Body>";
 
-			loadXmlData += string.Format(@"<{0} xmlns=""http://tempuri.org/"">", action);
+			loadXmlData += string.Format(@"<{0} xmlns=""{1}"">", action, serviceNamespace);
 
 			// do this part in a for loop for however many arguments we need?
             for (int i = 0; i < parameters.Count; i++)

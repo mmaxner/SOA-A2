@@ -32,90 +32,56 @@
             this.cmbMethod = new System.Windows.Forms.ComboBox();
             this.lblService = new System.Windows.Forms.Label();
             this.lblMethod = new System.Windows.Forms.Label();
-            this.lblResponse = new System.Windows.Forms.Label();
-            this.gridResponse = new System.Windows.Forms.DataGridView();
-            this.Results = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnInvoke = new System.Windows.Forms.Button();
             this.grpArgumentControls = new System.Windows.Forms.GroupBox();
-            ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).BeginInit();
+            this.txtResults = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // cmbService
             // 
+            this.cmbService.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbService.FormattingEnabled = true;
-            this.cmbService.Location = new System.Drawing.Point(100, 15);
-            this.cmbService.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbService.Location = new System.Drawing.Point(61, 6);
             this.cmbService.Name = "cmbService";
-            this.cmbService.Size = new System.Drawing.Size(160, 24);
+            this.cmbService.Size = new System.Drawing.Size(410, 21);
             this.cmbService.TabIndex = 0;
             this.cmbService.SelectedIndexChanged += new System.EventHandler(this.cmbService_SelectedIndexChanged);
             // 
             // cmbMethod
             // 
+            this.cmbMethod.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbMethod.FormattingEnabled = true;
-            this.cmbMethod.Location = new System.Drawing.Point(100, 48);
-            this.cmbMethod.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbMethod.Location = new System.Drawing.Point(61, 33);
             this.cmbMethod.Name = "cmbMethod";
-            this.cmbMethod.Size = new System.Drawing.Size(160, 24);
+            this.cmbMethod.Size = new System.Drawing.Size(410, 21);
             this.cmbMethod.TabIndex = 1;
             this.cmbMethod.SelectedIndexChanged += new System.EventHandler(this.cmbMethod_SelectedIndexChanged);
             // 
             // lblService
             // 
             this.lblService.AutoSize = true;
-            this.lblService.Location = new System.Drawing.Point(35, 18);
-            this.lblService.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblService.Location = new System.Drawing.Point(12, 9);
             this.lblService.Name = "lblService";
-            this.lblService.Size = new System.Drawing.Size(55, 17);
+            this.lblService.Size = new System.Drawing.Size(43, 13);
             this.lblService.TabIndex = 2;
             this.lblService.Text = "Service";
             // 
             // lblMethod
             // 
             this.lblMethod.AutoSize = true;
-            this.lblMethod.Location = new System.Drawing.Point(35, 52);
-            this.lblMethod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMethod.Location = new System.Drawing.Point(12, 36);
             this.lblMethod.Name = "lblMethod";
-            this.lblMethod.Size = new System.Drawing.Size(55, 17);
+            this.lblMethod.Size = new System.Drawing.Size(43, 13);
             this.lblMethod.TabIndex = 3;
             this.lblMethod.Text = "Method";
             // 
-            // lblResponse
-            // 
-            this.lblResponse.AutoSize = true;
-            this.lblResponse.Location = new System.Drawing.Point(19, 313);
-            this.lblResponse.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblResponse.Name = "lblResponse";
-            this.lblResponse.Size = new System.Drawing.Size(72, 17);
-            this.lblResponse.TabIndex = 4;
-            this.lblResponse.Text = "Response";
-            // 
-            // gridResponse
-            // 
-            this.gridResponse.AllowUserToAddRows = false;
-            this.gridResponse.AllowUserToDeleteRows = false;
-            this.gridResponse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridResponse.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Results});
-            this.gridResponse.Location = new System.Drawing.Point(100, 313);
-            this.gridResponse.Margin = new System.Windows.Forms.Padding(4);
-            this.gridResponse.Name = "gridResponse";
-            this.gridResponse.ReadOnly = true;
-            this.gridResponse.Size = new System.Drawing.Size(529, 185);
-            this.gridResponse.TabIndex = 4;
-            // 
-            // Results
-            // 
-            this.Results.HeaderText = "Results";
-            this.Results.Name = "Results";
-            this.Results.ReadOnly = true;
-            // 
             // btnInvoke
             // 
-            this.btnInvoke.Location = new System.Drawing.Point(100, 277);
-            this.btnInvoke.Margin = new System.Windows.Forms.Padding(4);
+            this.btnInvoke.Location = new System.Drawing.Point(12, 224);
             this.btnInvoke.Name = "btnInvoke";
-            this.btnInvoke.Size = new System.Drawing.Size(100, 28);
+            this.btnInvoke.Size = new System.Drawing.Size(75, 23);
             this.btnInvoke.TabIndex = 3;
             this.btnInvoke.Text = "Invoke";
             this.btnInvoke.UseVisualStyleBackColor = true;
@@ -123,30 +89,42 @@
             // 
             // grpArgumentControls
             // 
-            this.grpArgumentControls.Location = new System.Drawing.Point(38, 85);
+            this.grpArgumentControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpArgumentControls.Location = new System.Drawing.Point(15, 59);
+            this.grpArgumentControls.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.grpArgumentControls.Name = "grpArgumentControls";
-            this.grpArgumentControls.Size = new System.Drawing.Size(591, 185);
+            this.grpArgumentControls.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpArgumentControls.Size = new System.Drawing.Size(456, 160);
             this.grpArgumentControls.TabIndex = 8;
             this.grpArgumentControls.TabStop = false;
             this.grpArgumentControls.Text = "Arguments";
             // 
+            // txtResults
+            // 
+            this.txtResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtResults.Location = new System.Drawing.Point(12, 253);
+            this.txtResults.Multiline = true;
+            this.txtResults.Name = "txtResults";
+            this.txtResults.Size = new System.Drawing.Size(460, 149);
+            this.txtResults.TabIndex = 9;
+            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(645, 510);
+            this.ClientSize = new System.Drawing.Size(484, 414);
+            this.Controls.Add(this.txtResults);
             this.Controls.Add(this.grpArgumentControls);
             this.Controls.Add(this.btnInvoke);
-            this.Controls.Add(this.gridResponse);
-            this.Controls.Add(this.lblResponse);
             this.Controls.Add(this.lblMethod);
             this.Controls.Add(this.lblService);
             this.Controls.Add(this.cmbMethod);
             this.Controls.Add(this.cmbService);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Assignment 2 - Web Services";
-            ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -158,11 +136,9 @@
         private System.Windows.Forms.ComboBox cmbMethod;
         private System.Windows.Forms.Label lblService;
         private System.Windows.Forms.Label lblMethod;
-        private System.Windows.Forms.Label lblResponse;
-        private System.Windows.Forms.DataGridView gridResponse;
 		private System.Windows.Forms.Button btnInvoke;
         private System.Windows.Forms.GroupBox grpArgumentControls;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Results;
+        private System.Windows.Forms.TextBox txtResults;
     }
 }
 
