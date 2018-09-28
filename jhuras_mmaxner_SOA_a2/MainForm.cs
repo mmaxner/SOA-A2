@@ -48,6 +48,16 @@ namespace SOA___Assignment_2___Web_Services
 
         public void GenerateArgumentControls()
         {
+            _currentServiceNamespace = _soapConfig
+                .Descendants("services")
+                .Elements("service")
+                .Elements("name")
+                .Where(x => x.Value == ((ComboBoxItem)cmbService.SelectedItem).Text) // service name
+                .Ancestors("service")
+                .Elements("namespace")
+                .Select(y => y.Value)
+                .FirstOrDefault();
+
             grpArgumentControls.Controls.Clear();
             for (int i = 0; i < CurrentArguments.Count; i++)
             {
@@ -96,13 +106,13 @@ namespace SOA___Assignment_2___Web_Services
 
                         control = womboCombo;
                         break;
-                    case "date":
+                    //case "date":
                         /*DateTimePicker dicker = new DateTimePicker();
                         dicker.Format = DateTimePickerFormat.Custom();*/
                         
 
 
-                        break;
+                        //break;
                     case "int":
                     case "string":
                     default:
@@ -126,7 +136,8 @@ namespace SOA___Assignment_2___Web_Services
             string action = (cmbMethod.SelectedItem as ComboBoxItem).Value;
 
             string result = WebServiceFramework.CallWebService(url, action, CurrentArguments, _currentServiceNamespace);
-			if (!string.IsNullOrEmpty(result))
+            if (!string.IsNullOrEmpty(result))
+                txtResults.Clear();
 			{
 				using (Stream resultStream = GenerateStreamFromString(result))
 				{
@@ -246,9 +257,8 @@ namespace SOA___Assignment_2___Web_Services
 							Console.WriteLine("Start Element {0}", reader.Name);
 							break;
 						case XmlNodeType.Text:
-                            gridResponse.Rows.Add(await reader.GetValueAsync());
-                            
-							break;
+                            txtResults.Text += await reader.GetValueAsync();
+                            break;
 						case XmlNodeType.EndElement:
 							Console.WriteLine("End Element {0}", reader.Name);
 							break;
