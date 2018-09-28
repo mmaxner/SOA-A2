@@ -34,10 +34,10 @@
             this.lblMethod = new System.Windows.Forms.Label();
             this.lblResponse = new System.Windows.Forms.Label();
             this.gridResponse = new System.Windows.Forms.DataGridView();
+            this.Results = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnInvoke = new System.Windows.Forms.Button();
             this.gridArguments = new System.Windows.Forms.DataGridView();
             this.grpArgumentControls = new System.Windows.Forms.GroupBox();
-            this.Results = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gridResponse)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridArguments)).BeginInit();
             this.SuspendLayout();
@@ -50,6 +50,7 @@
             this.cmbService.Name = "cmbService";
             this.cmbService.Size = new System.Drawing.Size(160, 24);
             this.cmbService.TabIndex = 0;
+            this.cmbService.SelectedIndexChanged += new System.EventHandler(this.cmbService_SelectedIndexChanged);
             // 
             // cmbMethod
             // 
@@ -59,6 +60,7 @@
             this.cmbMethod.Name = "cmbMethod";
             this.cmbMethod.Size = new System.Drawing.Size(160, 24);
             this.cmbMethod.TabIndex = 1;
+            this.cmbMethod.SelectedIndexChanged += new System.EventHandler(this.cmbMethod_SelectedIndexChanged);
             // 
             // lblService
             // 
@@ -104,6 +106,12 @@
             this.gridResponse.Size = new System.Drawing.Size(529, 185);
             this.gridResponse.TabIndex = 4;
             // 
+            // Results
+            // 
+            this.Results.HeaderText = "Results";
+            this.Results.Name = "Results";
+            this.Results.ReadOnly = true;
+            // 
             // btnInvoke
             // 
             this.btnInvoke.Location = new System.Drawing.Point(100, 277);
@@ -134,12 +142,6 @@
             this.grpArgumentControls.TabIndex = 8;
             this.grpArgumentControls.TabStop = false;
             this.grpArgumentControls.Text = "Arguments";
-            // 
-            // Results
-            // 
-            this.Results.HeaderText = "Results";
-            this.Results.Name = "Results";
-            this.Results.ReadOnly = true;
             // 
             // MainForm
             // 

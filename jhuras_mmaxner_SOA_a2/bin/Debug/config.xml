@@ -70,44 +70,33 @@
    
   </service>
 	<service>
-		<name>Calculator</name>
-		<url>http://www.dneonline.com/calculator.asmx</url>
-		<action>
-			<name>Add</name>
-			<parameter>intA</parameter>
-			<parameter>intB</parameter>
-		</action>
-		<action>
-			<name>Subtract</name>
-			<parameter>intA</parameter>
-			<parameter>intB</parameter>
-		</action>
-		<action>
-			<name>Multiply</name>
-			<parameter>intA</parameter>
-			<parameter>intB</parameter>
-		</action>
-		<action>
-			<name>Divide</name>
-			<parameter>intA</parameter>
-			<parameter>intB</parameter>
-		</action>
-	</service>
-	<service>
 		<name>Dictionary</name>
 		<url>http://services.aonaware.com/DictService/DictService.asmx</url>
+    <namespace>http://services.aonaware.com/webservices/</namespace>
 		<action>
 			<name>Define</name>
-			<parameter>word</parameter>
+			<parameter>
+        <dataName>word</dataName>
+        <uiName>Word</uiName>
+        </parameter>
 		</action>
 		<action>
 			<name>DefineInDict</name>
-			<parameter>dictId</parameter>
-			<parameter>word</parameter>
+			<parameter>
+        <dataName>dictId</dataName>
+        <uiName>Dictionary Id</uiName>
+        </parameter>
+			<parameter>
+        <dataName>word</dataName>
+        <uiName>Word</uiName>
+        </parameter>
 		</action>
 		<action>
 			<name>DictionaryInfo</name>
-			<parameter>dictId</parameter>
+			<parameter>
+        <dataName>dictId</dataName>
+        <uiName>Dictionary Id</uiName>
+        </parameter>
 		</action>
 		<action>
 			<name>DictionaryList</name>
@@ -117,14 +106,29 @@
 		</action>
 		<action>
 			<name>Match</name>
-			<parameter>word</parameter>
-			<parameter>strategy</parameter>
+			<parameter>
+        <dataName>word</dataName>
+        <uiName>Word</uiName>
+        </parameter>
+			<parameter>
+        <dataName>strategy</dataName>
+        <uiName>Strategy</uiName>
+        </parameter>
 		</action>
 		<action>
 			<name>MatchInDict</name>
-			<parameter>dictId</parameter>
-			<parameter>word</parameter>
-			<parameter>strategy</parameter>
+			<parameter>
+        <dataName>dictId</dataName>
+        <uiName>Dictionary Id</uiName>
+        </parameter>
+			<parameter>
+        <dataName>word</dataName>
+        <uiName>Word</uiName>
+        </parameter>
+			<parameter>
+        <dataName>strategy</dataName>
+        <uiName>Strategy</uiName>
+        </parameter>
 		</action>
 		<action>
 			<name>ServerInfo</name>
