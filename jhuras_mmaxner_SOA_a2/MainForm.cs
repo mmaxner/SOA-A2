@@ -178,9 +178,8 @@ namespace SOA___Assignment_2___Web_Services
 							Console.WriteLine("Start Element {0}", reader.Name);
 							break;
 						case XmlNodeType.Text:
-							Console.WriteLine("Text Node: {0}",
-									 await reader.GetValueAsync());
                             gridResponse.Rows.Add(await reader.GetValueAsync());
+                            
 							break;
 						case XmlNodeType.EndElement:
 							Console.WriteLine("End Element {0}", reader.Name);
