@@ -24,7 +24,6 @@ namespace SOA___Assignment_2___Web_Services
         XDocument _soapConfig;
 
         public static List<SOAPArgument> CurrentArguments = new List<SOAPArgument>();
-        public static SOAPArgument soap = new SOAPArgument("intC", "3rd Number");
 
         public MainForm()
 		{
@@ -60,15 +59,52 @@ namespace SOA___Assignment_2___Web_Services
                 label.Size = ARGUMENT_LABEL_SIZE;
                 label.Text = CurrentArguments[i].uiName;
 
-                TextBox text = new TextBox();
-                text.Location = location + ARGUMENT_TEXTBOX_OFFSET;
-                text.Size = ARGUMENT_TEXTBOX_SIZE;
-                
-                text.DataBindings.Add("Text", CurrentArguments[i], "value");
+                Control control = null;
 
-                
+                switch (CurrentArguments[i].type)
+                {
+                    case "list":
+                        ComboBox womboCombo = new ComboBox();
+
+                        string XMLList = WebServiceFramework.CallWebService((cmbService.SelectedItem as ComboBoxItem).Value, CurrentArguments[i].listSource.serviceName, new List<SOAPArgument>());
+                        
+
+                        BindingSource bindingSource1 = new BindingSource();
+                        XDocument docList = XDocument.Parse(XMLList);
+                        IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.dataMember);
+                        IEnumerable<XElement> displayList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.displayMember);
+
+                        Dictionary<string, string> dataSource = new Dictionary<string, string>();
+
+                        for (int j = 0; j < dataList.Count(); j++)
+                        {
+                            dataSource.Add(dataList.ElementAt(j).Value
+                                , displayList.ElementAt(j).Value);
+                        }
+
+                        bindingSource1.DataSource = dataSource;
+                        womboCombo.DataSource = bindingSource1;
+                        womboCombo.DisplayMember = "Value";
+                        womboCombo.ValueMember = "Key";
+
+                        womboCombo.DataBindings.Add("SelectedValue", CurrentArguments[i], "value");
+
+                        control = womboCombo;
+                        break;
+                    case "int":
+                    case "string":
+                    default:
+                        TextBox text = new TextBox();
+                        text.DataBindings.Add("Text", CurrentArguments[i], "value");
+                        control = text;
+                        break;
+                }
+
+                control.Location = location + ARGUMENT_TEXTBOX_OFFSET;
+                control.Size = ARGUMENT_TEXTBOX_SIZE;
+
                 grpArgumentControls.Controls.Add(label);
-                grpArgumentControls.Controls.Add(text);
+                grpArgumentControls.Controls.Add(control);
             }
         }
 
@@ -144,7 +180,20 @@ namespace SOA___Assignment_2___Web_Services
                 .Where(f => f.Value == methodName)
                 .Ancestors("action")
                 .Elements("parameter")
-                .Select(g => new SOAPArgument(g.Element("dataName").Value, g.Element("uiName").Value))
+                .Select(g =>
+                {
+                    string dataName = g.Element("dataName").Value;
+                    string uiName = g.Element("uiName").Value;
+                    string type = g.Element("type").Value;
+                    SOAPArgument.ArgumentListSource listSource = null;
+                    if (type == "list")
+                    {
+                        var ls = g.Element("listsource");
+                        listSource = new SOAPArgument.ArgumentListSource(ls.Element("servicename").Value, ls.Element("displaymember").Value, ls.Element("datamember").Value);
+
+                    }
+                    return new SOAPArgument(dataName, uiName, type, listSource);
+                })
                 .ToList();
 
 

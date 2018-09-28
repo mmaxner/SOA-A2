@@ -15,11 +15,27 @@ namespace SOA___Assignment_2___Web_Services
         public string dataName { get; set; }
         public string uiName { get; set; }
         public string value { get; set; }
+        public string type { get; set; }
+        public ArgumentListSource listSource { get; set; }
+        public class ArgumentListSource
+        {
+            public string serviceName { get; set; }
+            public string displayMember { get; set; }
+            public string dataMember { get; set; }
+            public ArgumentListSource(string serviceNameIn, string displayMemberIn, string dataMemberIn)
+            {
+                serviceName = serviceNameIn;
+                displayMember = displayMemberIn;
+                dataMember = dataMemberIn;
+            }
+        }
 
-        public SOAPArgument(string dataNameIn, string uiNameIn)
+        public SOAPArgument(string dataNameIn, string uiNameIn, string typeIn, ArgumentListSource listSourceIn)
         {
             dataName = dataNameIn;
             uiName = uiNameIn;
+            type = typeIn;
+            listSource = listSourceIn;
             value = "";
         }
     }

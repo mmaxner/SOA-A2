@@ -6,10 +6,12 @@
       <name>Add</name>
         <dataName></dataName>
         <parameter>
+          <type>int</type>
           <dataName>intA</dataName>
           <uiName>1st Number</uiName>
         </parameter>
         <parameter>
+          <type>int</type>
           <dataName>intB</dataName>
           <uiName>2nd Number</uiName>
         </parameter>
@@ -17,21 +19,25 @@
     <action>
       <name>Subtract</name>
       <parameter>
+        <type>int</type>
         <dataName>intA</dataName>
         <uiName>1st Number</uiName>
       </parameter>
       <parameter>
+        <type>int</type>
         <dataName>intB</dataName>
         <uiName>2nd Number</uiName>
       </parameter>
     </action>
     <action>
+      <type>int</type>
       <name>Multiply</name>
       <parameter>
         <dataName>intA</dataName>
         <uiName>1st Number</uiName>
       </parameter>
       <parameter>
+        <type>int</type>
         <dataName>intB</dataName>
         <uiName>2nd Number</uiName>
       </parameter>
@@ -39,10 +45,12 @@
     <action>
       <name>Divide</name>
       <parameter>
+        <type>int</type>
         <dataName>intA</dataName>
         <uiName>1st Number</uiName>
       </parameter>
       <parameter>
+        <type>int</type>
         <dataName>intB</dataName>
         <uiName>2nd Number</uiName>
       </parameter>
@@ -56,16 +64,20 @@
       <name>GetCurrencyRate</name>
       <dataName></dataName>
       <parameter>
+        <type>list</type>
+        <listsource>
+          <servicename>GetCurrencies</servicename>
+          <displaymember>string</displaymember>
+          <datamember>string</datamember>
+        </listsource>
         <dataName>Currency</dataName>
         <uiName>Currency</uiName>
       </parameter>
       <parameter>
+        <type>date</type>
         <dataName>RateDate</dataName>
         <uiName>Date</uiName>
       </parameter>
-    </action>
-    <action>
-      <name>GetCurrencies</name>
     </action>
    
   </service>
@@ -76,6 +88,7 @@
 		<action>
 			<name>Define</name>
 			<parameter>
+        <type>string</type>
         <dataName>word</dataName>
         <uiName>Word</uiName>
         </parameter>
@@ -83,10 +96,12 @@
 		<action>
 			<name>DefineInDict</name>
 			<parameter>
+        <type>string</type>
         <dataName>dictId</dataName>
         <uiName>Dictionary Id</uiName>
         </parameter>
 			<parameter>
+        <type>string</type>
         <dataName>word</dataName>
         <uiName>Word</uiName>
         </parameter>
@@ -94,6 +109,7 @@
 		<action>
 			<name>DictionaryInfo</name>
 			<parameter>
+        <type>string</type>
         <dataName>dictId</dataName>
         <uiName>Dictionary Id</uiName>
         </parameter>
@@ -107,10 +123,12 @@
 		<action>
 			<name>Match</name>
 			<parameter>
+        <type>string</type>
         <dataName>word</dataName>
         <uiName>Word</uiName>
         </parameter>
 			<parameter>
+        <type>string</type>
         <dataName>strategy</dataName>
         <uiName>Strategy</uiName>
         </parameter>
@@ -118,14 +136,17 @@
 		<action>
 			<name>MatchInDict</name>
 			<parameter>
+        <type>string</type>
         <dataName>dictId</dataName>
         <uiName>Dictionary Id</uiName>
         </parameter>
 			<parameter>
+        <type>string</type>
         <dataName>word</dataName>
         <uiName>Word</uiName>
         </parameter>
 			<parameter>
+        <type>string</type>
         <dataName>strategy</dataName>
         <uiName>Strategy</uiName>
         </parameter>
