@@ -91,6 +91,13 @@ namespace SOA___Assignment_2___Web_Services
 
                         control = womboCombo;
                         break;
+                    case "date":
+                        /*DateTimePicker dicker = new DateTimePicker();
+                        dicker.Format = DateTimePickerFormat.Custom();*/
+                        
+
+
+                        break;
                     case "int":
                     case "string":
                     default:
