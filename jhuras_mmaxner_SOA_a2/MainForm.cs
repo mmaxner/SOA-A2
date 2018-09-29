@@ -78,7 +78,7 @@ namespace SOA___Assignment_2___Web_Services
                     switch (CurrentArguments[i].type)
                     {
                         case "list":
-                            ComboBox womboCombo = new ComboBox();
+                            ComboBox ListPicker = new ComboBox();
 
                             string XMLList = WebServiceFramework.CallWebService(
                                 (cmbService.SelectedItem as ComboBoxItem).Value,
@@ -100,38 +100,40 @@ namespace SOA___Assignment_2___Web_Services
                             }
 
                             bindingSource1.DataSource = dataSource;
-                            womboCombo.DataSource = bindingSource1;
-                            womboCombo.DisplayMember = "Value";
-                            womboCombo.ValueMember = "Key";
+                            ListPicker.DataSource = bindingSource1;
+                            ListPicker.DisplayMember = "Value";
+                            ListPicker.ValueMember = "Key";
 
-                            womboCombo.DataBindings.Add("SelectedValue", CurrentArguments[i], "value");
+                            ListPicker.DataBindings.Add("SelectedValue", CurrentArguments[i], "value");
 
-                            control = womboCombo;
+                            control = ListPicker;
                             break;
                         case "date":
-                            DateTimePicker dicker = new DateTimePicker();
-                            dicker.Format = DateTimePickerFormat.Custom;
-                            dicker.CustomFormat = "yyyy-mm-dd";
-                            CurrentArguments[i].value = DateTime.Now.ToString("yyyy-mm-dd");
+                            DateTimePicker DatePicker = new DateTimePicker();
+                            DatePicker.Format = DateTimePickerFormat.Custom;
+                            DatePicker.CustomFormat = "yyyy-MM-dd";
+                            CurrentArguments[i].value = DateTime.Now.ToString("yyyy-MM-dd");
 
-                            dicker.DataBindings.Add("Value", CurrentArguments[i], "value", true);
+                            Binding binding = new Binding("Value", CurrentArguments[i], "value", true);
 
-                            control = dicker;
+                            DatePicker.DataBindings.Add(binding);
+
+                            control = DatePicker;
                             break;
                         case "int":
-                            NumericUpDown cuckDown = new NumericUpDown();
-                            cuckDown.Minimum = int.MinValue;
-                            cuckDown.Maximum = int.MaxValue;
+                            NumericUpDown NumberPicker = new NumericUpDown();
+                            NumberPicker.Minimum = int.MinValue;
+                            NumberPicker.Maximum = int.MaxValue;
                             CurrentArguments[i].value = "0";
 
-                            cuckDown.DataBindings.Add("Value", CurrentArguments[i], "value", true, DataSourceUpdateMode.OnPropertyChanged);
-                            control = cuckDown;
+                            NumberPicker.DataBindings.Add("Value", CurrentArguments[i], "value", true, DataSourceUpdateMode.OnPropertyChanged);
+                            control = NumberPicker;
                             break;
                         case "string":
                         default:
-                            TextBox text = new TextBox();
-                            text.DataBindings.Add("Text", CurrentArguments[i], "value");
-                            control = text;
+                            TextBox Text = new TextBox();
+                            Text.DataBindings.Add("Text", CurrentArguments[i], "value");
+                            control = Text;
                             break;
                     }
 
@@ -146,7 +148,7 @@ namespace SOA___Assignment_2___Web_Services
             {
                 MessageBox.Show(this, ex.Message, "Error connecting to SOAP service", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
-            
+
         }
 
 		private async void btnInvoke_ClickAsync(object sender, EventArgs e)
@@ -282,7 +284,8 @@ namespace SOA___Assignment_2___Web_Services
 							Console.WriteLine("Start Element {0}", reader.Name);
 							break;
 						case XmlNodeType.Text:
-                            txtResults.Text += await reader.GetValueAsync();
+                            txtResults.AppendText(await reader.GetValueAsync() + Environment.NewLine);
+                            //txtResults.Text += await reader.GetValueAsync() + ;
                             break;
 						case XmlNodeType.EndElement:
 							Console.WriteLine("End Element {0}", reader.Name);

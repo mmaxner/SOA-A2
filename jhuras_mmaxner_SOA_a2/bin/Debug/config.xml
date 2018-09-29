@@ -81,6 +81,39 @@
         <uiName>Date</uiName>
       </parameter>
     </action>
+    <action>
+      <name>GetConversionAmount</name>
+      <parameter>
+        <type>list</type>
+        <listsource>
+          <servicename>GetCurrencies</servicename>
+          <displaymember>string</displaymember>
+          <datamember>string</datamember>
+        </listsource>
+        <dataName>CurrencyFrom</dataName>
+        <uiName>Base Currency</uiName>
+      </parameter>
+      <parameter>
+        <type>list</type>
+        <listsource>
+          <servicename>GetCurrencies</servicename>
+          <displaymember>string</displaymember>
+          <datamember>string</datamember>
+        </listsource>
+        <dataName>CurrencyTo</dataName>
+        <uiName>Target Currency</uiName>
+      </parameter>
+      <parameter>
+        <type>date</type>
+        <dataName>RateDate</dataName>
+        <uiName>Date</uiName>
+      </parameter>
+      <parameter>
+        <type>decimal</type>
+        <dataName>Amount</dataName>
+        <uiName>Amount</uiName>
+      </parameter>
+    </action>
    
   </service>
 	<service>
@@ -98,7 +131,12 @@
 		<action>
 			<name>DefineInDict</name>
 			<parameter>
-				<type>string</type>
+        <type>list</type>
+        <listsource>
+          <servicename>DictionaryList</servicename>
+          <displaymember>Name</displaymember>
+          <datamember>Id</datamember>
+        </listsource>
 				<dataName>dictId</dataName>
 				<uiName>Dictionary Id</uiName>
 			</parameter>
@@ -111,7 +149,12 @@
 		<action>
 			<name>DictionaryInfo</name>
 			<parameter>
-				<type>string</type>
+        <type>list</type>
+        <listsource>
+          <servicename>DictionaryList</servicename>
+          <displaymember>Name</displaymember>
+          <datamember>Id</datamember>
+        </listsource>
 				<dataName>dictId</dataName>
 				<uiName>Dictionary Id</uiName>
 			</parameter>
@@ -130,7 +173,12 @@
 				<uiName>Word</uiName>
 			</parameter>
 			<parameter>
-				<type>string</type>
+        <type>list</type>
+        <listsource>
+          <servicename>StrategyList</servicename>
+          <displaymember>Id</displaymember>
+          <datamember>Id</datamember>
+        </listsource>
 				<dataName>strategy</dataName>
 				<uiName>Strategy</uiName>
 			</parameter>
@@ -138,7 +186,12 @@
 		<action>
 			<name>MatchInDict</name>
 			<parameter>
-				<type>string</type>
+        <type>list</type>
+        <listsource>
+          <servicename>DictionaryList</servicename>
+          <displaymember>Name</displaymember>
+          <datamember>Id</datamember>
+        </listsource>
 				<dataName>dictId</dataName>
 				<uiName>Dictionary Id</uiName>
 			</parameter>
@@ -148,7 +201,12 @@
         <uiName>Word</uiName>
         </parameter>
 			<parameter>
-				<type>string</type>
+        <type>list</type>
+        <listsource>
+          <servicename>StrategyList</servicename>
+          <displaymember>Id</displaymember>
+          <datamember>Id</datamember>
+        </listsource>
 				<dataName>strategy</dataName>
 				<uiName>Strategy</uiName>
 			</parameter>
