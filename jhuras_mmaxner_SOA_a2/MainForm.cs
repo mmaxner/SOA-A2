@@ -71,25 +71,25 @@ namespace SOA___Assignment_2___Web_Services
                     }
                     label.Location = location;
                     label.Size = ARGUMENT_LABEL_SIZE;
-                    label.Text = CurrentArguments[i].uiName;
+                    label.Text = string.Format("{0} ({1})", CurrentArguments[i].UIName, CurrentArguments[i].DataType);
 
                     Control control = null;
 
-                    switch (CurrentArguments[i].type)
+                    switch (CurrentArguments[i].DataType)
                     {
                         case "list":
                             ComboBox ListPicker = new ComboBox();
 
                             string XMLList = WebServiceFramework.CallWebService(
                                 (cmbService.SelectedItem as ComboBoxItem).Value,
-                                CurrentArguments[i].listSource.serviceName,
+                                CurrentArguments[i].ListSource.ServiceName,
                                 new List<SOAPArgument>(),
                                 _currentServiceNamespace);
 
                             BindingSource bindingSource1 = new BindingSource();
                             XDocument docList = XDocument.Parse(XMLList);
-                            IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.dataMember);
-                            IEnumerable<XElement> displayList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.displayMember);
+                            IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].ListSource.DataMember);
+                            IEnumerable<XElement> displayList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].ListSource.DisplayMember);
 
                             Dictionary<string, string> dataSource = new Dictionary<string, string>();
 
@@ -112,7 +112,7 @@ namespace SOA___Assignment_2___Web_Services
                             DateTimePicker DatePicker = new DateTimePicker();
                             DatePicker.Format = DateTimePickerFormat.Custom;
                             DatePicker.CustomFormat = "yyyy-MM-dd";
-                            CurrentArguments[i].value = DateTime.Now.ToString("yyyy-MM-dd");
+                            CurrentArguments[i].Value = DateTime.Now.ToString("yyyy-MM-dd");
 
                             Binding binding = new Binding("Value", CurrentArguments[i], "value", true);
 
@@ -124,7 +124,7 @@ namespace SOA___Assignment_2___Web_Services
                             NumericUpDown NumberPicker = new NumericUpDown();
                             NumberPicker.Minimum = int.MinValue;
                             NumberPicker.Maximum = int.MaxValue;
-                            CurrentArguments[i].value = "0";
+                            CurrentArguments[i].Value = "0";
 
                             NumberPicker.DataBindings.Add("Value", CurrentArguments[i], "value", true, DataSourceUpdateMode.OnPropertyChanged);
                             control = NumberPicker;
@@ -157,21 +157,71 @@ namespace SOA___Assignment_2___Web_Services
             {
                 string url = (cmbService.SelectedItem as ComboBoxItem).Value;
                 string action = (cmbMethod.SelectedItem as ComboBoxItem).Value;
+				string errorMessage = string.Empty;
+				bool isAllValidData = true;
 
-                string result = WebServiceFramework.CallWebService(url, action, CurrentArguments, _currentServiceNamespace);
-                if (!string.IsNullOrEmpty(result))
-                    txtResults.Clear();
-                {
-                    using (Stream resultStream = GenerateStreamFromString(result))
-                    {
-                        await parseXML(resultStream);
-                    }
-                }
-            }
+				foreach (SOAPArgument argument in CurrentArguments)
+				{
+					errorMessage = isValidData(argument, argument.DataType);
+					if (!string.IsNullOrEmpty(errorMessage))
+					{
+						isAllValidData = false;
+						break;
+					}
+				}
+
+				if (isAllValidData)
+				{
+					string result = WebServiceFramework.CallWebService(url, action, CurrentArguments, _currentServiceNamespace);
+					if (!string.IsNullOrEmpty(result))
+						txtResults.Clear();
+					{
+						using (Stream resultStream = GenerateStreamFromString(result))
+						{
+							await parseXML(resultStream);
+						}
+					}
+				}
+				else
+				{
+					MessageBox.Show(this, errorMessage, "Error parsing argument(s)", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+				}
+			}
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, "Error connecting to SOAP service", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
+		}
+
+		private string isValidData(SOAPArgument argument, string dataType)
+		{
+			string errorMessage = string.Empty;
+			bool isValidData = false;
+
+			switch (dataType)
+			{
+				case "int":
+					isValidData = int.TryParse(argument.Value.ToString(), out int i);
+					break;
+				case "date":
+					isValidData = DateTime.TryParse(argument.Value.ToString(), out DateTime j);
+					break;
+				case "decimal":
+					isValidData = decimal.TryParse(argument.Value.ToString(), out decimal k);
+					break;
+				case "list":
+					isValidData = true;
+					break;
+				default:
+					break;
+			}
+
+			if (!isValidData)
+			{
+				errorMessage = string.Format("Cannot convert \"{0}\" to the data type \"{1}\"", argument.Value.ToString(), dataType);
+			}
+
+			return errorMessage;
 		}
 
         private void loadSoapConfig()
