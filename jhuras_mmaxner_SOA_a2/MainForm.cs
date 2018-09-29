@@ -209,6 +209,7 @@ namespace SOA___Assignment_2___Web_Services
 				case "decimal":
 					isValidData = decimal.TryParse(argument.Value.ToString(), out decimal k);
 					break;
+				case "string":
 				case "list":
 					isValidData = true;
 					break;
