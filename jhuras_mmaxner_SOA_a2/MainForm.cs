@@ -30,9 +30,6 @@ namespace SOA___Assignment_2___Web_Services
         public MainForm()
 		{
 			InitializeComponent();
-            /*gridArguments.Columns.Add("argumentName", "Argument");
-            gridArguments.Columns.Add("argumentValue", "Value");*/
-            
 
             // load all settings in the xml config file
             loadSoapConfig();
@@ -42,23 +39,27 @@ namespace SOA___Assignment_2___Web_Services
 
 			// populate combo box 2 with a list of methods from the first url in the txt file (selected in combo box 1)
 			populateActions(((ComboBoxItem)cmbService.SelectedItem).Text);
-
+            
             populateArguments(((ComboBoxItem)cmbService.SelectedItem).Text, ((ComboBoxItem)cmbMethod.SelectedItem).Text);
         }
 
+        /// <summary>
+        ///     Creates a set of controls for manipulating arguments to be sent in a SOAP call, based on CurrentArguments.
+        ///     Attaches thse controls to grpArgumentControls, after clearing existing controls from it.
+        /// </summary>
         public void GenerateArgumentControls()
         {
             try
             {
                 _currentServiceNamespace = _soapConfig
-                .Descendants("services")
-                .Elements("service")
-                .Elements("name")
-                .Where(x => x.Value == ((ComboBoxItem)cmbService.SelectedItem).Text) // service name
-                .Ancestors("service")
-                .Elements("namespace")
-                .Select(y => y.Value)
-                .FirstOrDefault();
+                    .Descendants("services")
+                    .Elements("service")
+                    .Elements("name")
+                    .Where(x => x.Value == ((ComboBoxItem)cmbService.SelectedItem).Text) // service name
+                    .Ancestors("service")
+                    .Elements("namespace")
+                    .Select(y => y.Value)
+                    .FirstOrDefault();
 
                 grpArgumentControls.Controls.Clear();
                 for (int i = 0; i < CurrentArguments.Count; i++)
@@ -75,40 +76,46 @@ namespace SOA___Assignment_2___Web_Services
 
                     Control control = null;
 
+                    // based on the type of parameter, create and data bind a control for the user to enter a value with
                     switch (CurrentArguments[i].type)
                     {
                         case "list":
+                            // lists are displayed in a combobox
+                            // the items in the combo box are populated by another action, detailed in the list source of the Current Argument
                             ComboBox ListPicker = new ComboBox();
 
+                            // retrieve the list of items from the service
                             string XMLList = WebServiceFramework.CallWebService(
                                 (cmbService.SelectedItem as ComboBoxItem).Value,
                                 CurrentArguments[i].listSource.serviceName,
                                 new List<SOAPArgument>(),
                                 _currentServiceNamespace);
 
+                            // create a binding source, find the values for display/data
                             BindingSource bindingSource1 = new BindingSource();
                             XDocument docList = XDocument.Parse(XMLList);
                             IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.dataMember);
                             IEnumerable<XElement> displayList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].listSource.displayMember);
 
+                            // store the list in a dictionary
                             Dictionary<string, string> dataSource = new Dictionary<string, string>();
-
                             for (int j = 0; j < dataList.Count(); j++)
                             {
                                 dataSource.Add(dataList.ElementAt(j).Value
                                     , displayList.ElementAt(j).Value);
                             }
 
+                            // set the data source to the dictionary, and bind to the CurrentArgument
                             bindingSource1.DataSource = dataSource;
                             ListPicker.DataSource = bindingSource1;
                             ListPicker.DisplayMember = "Value";
                             ListPicker.ValueMember = "Key";
-
                             ListPicker.DataBindings.Add("SelectedValue", CurrentArguments[i], "value");
 
                             control = ListPicker;
                             break;
                         case "date":
+                            // dates use a datetimepicker
                             DateTimePicker DatePicker = new DateTimePicker();
                             DatePicker.Format = DateTimePickerFormat.Custom;
                             DatePicker.CustomFormat = "yyyy-MM-dd";
@@ -121,6 +128,7 @@ namespace SOA___Assignment_2___Web_Services
                             control = DatePicker;
                             break;
                         case "int":
+                            // ints used a numeric up/down
                             NumericUpDown NumberPicker = new NumericUpDown();
                             NumberPicker.Minimum = int.MinValue;
                             NumberPicker.Maximum = int.MaxValue;
@@ -131,15 +139,17 @@ namespace SOA___Assignment_2___Web_Services
                             break;
                         case "string":
                         default:
+                            // strings, and anything else, are a free form textbox
                             TextBox Text = new TextBox();
                             Text.DataBindings.Add("Text", CurrentArguments[i], "value");
                             control = Text;
                             break;
                     }
 
+                    // set the location of the control so that multiple controls don't overlap
                     control.Location = location + ARGUMENT_TEXTBOX_OFFSET;
                     control.Size = ARGUMENT_TEXTBOX_SIZE;
-
+                    // add the control to the group box
                     grpArgumentControls.Controls.Add(label);
                     grpArgumentControls.Controls.Add(control);
                 }
@@ -278,23 +288,10 @@ namespace SOA___Assignment_2___Web_Services
 			{
 				while (await reader.ReadAsync())
 				{
-					switch (reader.NodeType)
-					{
-						case XmlNodeType.Element:
-							Console.WriteLine("Start Element {0}", reader.Name);
-							break;
-						case XmlNodeType.Text:
-                            txtResults.AppendText(await reader.GetValueAsync() + Environment.NewLine);
-                            //txtResults.Text += await reader.GetValueAsync() + ;
-                            break;
-						case XmlNodeType.EndElement:
-							Console.WriteLine("End Element {0}", reader.Name);
-							break;
-						default:
-							Console.WriteLine("Other node {0} with value {1}",
-											reader.NodeType, reader.Value);
-							break;
-					}
+                    if (reader.NodeType == XmlNodeType.Text)
+                    {
+                        txtResults.AppendText(await reader.GetValueAsync() + Environment.NewLine);
+                    }
 				}
 			}
 		}

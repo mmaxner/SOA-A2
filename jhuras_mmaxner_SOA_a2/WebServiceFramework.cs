@@ -58,10 +58,6 @@ namespace SOA___Assignment_2___Web_Services
 			asyncResult.AsyncWaitHandle.WaitOne();
 
 			// get the response from the completed web request.
-			//using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
-			//{
-			//	result = webResponse.GetResponseStream();
-			//}
 			using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
 			{
 				using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
