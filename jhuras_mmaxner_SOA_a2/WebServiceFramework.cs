@@ -16,6 +16,7 @@ namespace SOA___Assignment_2___Web_Services
         public string UIName { get; set; }
         public string Value { get; set; }
         public string DataType { get; set; }
+		public List<string> CustomValidationExpressions { get; set; }
         public ArgumentListSource ListSource { get; set; }
         public class ArgumentListSource
         {
@@ -30,18 +31,27 @@ namespace SOA___Assignment_2___Web_Services
             }
         }
 
-        public SOAPArgument(string dataNameIn, string uiNameIn, string typeIn, ArgumentListSource listSourceIn)
+        public SOAPArgument(string dataNameIn, string uiNameIn, string typeIn, ArgumentListSource listSourceIn, List<string> customValidationExpression)
         {
             DataName = dataNameIn;
             UIName = uiNameIn;
             DataType = typeIn;
             ListSource = listSourceIn;
             Value = string.Empty;
+			CustomValidationExpressions = customValidationExpression;
         }
     }
 
-    //https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
-    public class WebServiceFramework
+	public class ResultDisplayProperties
+	{
+		public bool AddSpacingOnAllElements { get; set; }
+		public bool TrimAllWhitespace { get; set; }
+		public List<string> IgnoreElementList { get; set; }
+		public Dictionary<string,string> AddPrefixForElementList { get; set; }
+	}
+
+	//https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
+	public class WebServiceFramework
 	{
 		public static string CallWebService(string url, string action, List<SOAPArgument> parameters, string serviceNamespace)
 		{

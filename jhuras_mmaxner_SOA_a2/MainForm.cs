@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -23,9 +24,10 @@ namespace SOA___Assignment_2___Web_Services
         private readonly Size ARGUMENT_TEXTBOX_SIZE = new Size(150, 20);
 
         private string _currentServiceNamespace;
+		private string _currentMethod;
         private XDocument _soapConfig;
 
-        public static List<SOAPArgument> CurrentArguments = new List<SOAPArgument>();
+        public static List<SOAPArgument> _currentArguments = new List<SOAPArgument>();
 
         public MainForm()
 		{
@@ -61,7 +63,7 @@ namespace SOA___Assignment_2___Web_Services
                 .FirstOrDefault();
 
                 grpArgumentControls.Controls.Clear();
-                for (int i = 0; i < CurrentArguments.Count; i++)
+                for (int i = 0; i < _currentArguments.Count; i++)
                 {
                     Label label = new Label();
                     Point location = ARGUMENT_LABEL_LOCATION;
@@ -71,25 +73,25 @@ namespace SOA___Assignment_2___Web_Services
                     }
                     label.Location = location;
                     label.Size = ARGUMENT_LABEL_SIZE;
-                    label.Text = string.Format("{0} ({1})", CurrentArguments[i].UIName, CurrentArguments[i].DataType);
+                    label.Text = string.Format("{0} ({1})", _currentArguments[i].UIName, _currentArguments[i].DataType);
 
                     Control control = null;
 
-                    switch (CurrentArguments[i].DataType)
+                    switch (_currentArguments[i].DataType)
                     {
                         case "list":
                             ComboBox ListPicker = new ComboBox();
 
                             string XMLList = WebServiceFramework.CallWebService(
                                 (cmbService.SelectedItem as ComboBoxItem).Value,
-                                CurrentArguments[i].ListSource.ServiceName,
+                                _currentArguments[i].ListSource.ServiceName,
                                 new List<SOAPArgument>(),
                                 _currentServiceNamespace);
 
                             BindingSource bindingSource1 = new BindingSource();
                             XDocument docList = XDocument.Parse(XMLList);
-                            IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].ListSource.DataMember);
-                            IEnumerable<XElement> displayList = docList.Descendants().Where(x => x.Name.LocalName == CurrentArguments[i].ListSource.DisplayMember);
+                            IEnumerable<XElement> dataList = docList.Descendants().Where(x => x.Name.LocalName == _currentArguments[i].ListSource.DataMember);
+                            IEnumerable<XElement> displayList = docList.Descendants().Where(x => x.Name.LocalName == _currentArguments[i].ListSource.DisplayMember);
 
                             Dictionary<string, string> dataSource = new Dictionary<string, string>();
 
@@ -104,7 +106,7 @@ namespace SOA___Assignment_2___Web_Services
                             ListPicker.DisplayMember = "Value";
                             ListPicker.ValueMember = "Key";
 
-                            ListPicker.DataBindings.Add("SelectedValue", CurrentArguments[i], "value");
+                            ListPicker.DataBindings.Add("SelectedValue", _currentArguments[i], "Value");
 
                             control = ListPicker;
                             break;
@@ -112,9 +114,9 @@ namespace SOA___Assignment_2___Web_Services
                             DateTimePicker DatePicker = new DateTimePicker();
                             DatePicker.Format = DateTimePickerFormat.Custom;
                             DatePicker.CustomFormat = "yyyy-MM-dd";
-                            CurrentArguments[i].Value = DateTime.Now.ToString("yyyy-MM-dd");
+                            _currentArguments[i].Value = DateTime.Now.ToString("yyyy-MM-dd");
 
-                            Binding binding = new Binding("Value", CurrentArguments[i], "value", true);
+                            Binding binding = new Binding("Value", _currentArguments[i], "Value", true);
 
                             DatePicker.DataBindings.Add(binding);
 
@@ -124,15 +126,15 @@ namespace SOA___Assignment_2___Web_Services
                             NumericUpDown NumberPicker = new NumericUpDown();
                             NumberPicker.Minimum = int.MinValue;
                             NumberPicker.Maximum = int.MaxValue;
-                            CurrentArguments[i].Value = "0";
+                            _currentArguments[i].Value = "0";
 
-                            NumberPicker.DataBindings.Add("Value", CurrentArguments[i], "value", true, DataSourceUpdateMode.OnPropertyChanged);
+                            NumberPicker.DataBindings.Add("Value", _currentArguments[i], "Value", true, DataSourceUpdateMode.OnPropertyChanged);
                             control = NumberPicker;
                             break;
                         case "string":
                         default:
                             TextBox Text = new TextBox();
-                            Text.DataBindings.Add("Text", CurrentArguments[i], "value");
+                            Text.DataBindings.Add("Text", _currentArguments[i], "Value");
                             control = Text;
                             break;
                     }
@@ -160,9 +162,9 @@ namespace SOA___Assignment_2___Web_Services
 				string errorMessage = string.Empty;
 				bool isAllValidData = true;
 
-				foreach (SOAPArgument argument in CurrentArguments)
+				foreach (SOAPArgument argument in _currentArguments)
 				{
-					errorMessage = isValidData(argument, argument.DataType);
+					errorMessage = isValidData(argument);
 					if (!string.IsNullOrEmpty(errorMessage))
 					{
 						isAllValidData = false;
@@ -172,13 +174,51 @@ namespace SOA___Assignment_2___Web_Services
 
 				if (isAllValidData)
 				{
-					string result = WebServiceFramework.CallWebService(url, action, CurrentArguments, _currentServiceNamespace);
+					string result = WebServiceFramework.CallWebService(url, action, _currentArguments, _currentServiceNamespace);
 					if (!string.IsNullOrEmpty(result))
-						txtResults.Clear();
 					{
+						txtResults.Clear();
+
+						string serviceName = (cmbService.SelectedItem as ComboBoxItem).Text;
+						ResultDisplayProperties displayProperties = _soapConfig.Descendants("services")
+							.Elements("service")
+							.Elements("name")
+							.Where(x => x.Value == serviceName)
+							.Ancestors("service")
+							.Elements("action")
+							.Elements("name")
+							.Where(y => y.Value == _currentMethod)
+							.Ancestors("action")
+							.Elements("resultproperties")
+							.Select(z =>
+							{
+								bool addSpacingOnAllElements = bool.Parse(z.Element("add_line_breaks_on_all_elements").Value);
+								bool trimAllWhitespace = bool.Parse(z.Element("trim_all_spacing").Value);
+								List<string> ignoreElementList = z.Element("ignore_elements").Value.Split(',').ToList();
+								Dictionary<string, string> addPrefixForElementList = new Dictionary<string, string>();
+								var prefixList = z.Element("add_prefix_for_elements").Value.Split('|').ToList();
+								foreach (var prefixCombo in prefixList)
+								{
+									string value = prefixCombo.Split(',')[0];
+									string key = prefixCombo.Split(',')[1];
+									addPrefixForElementList.Add(key, value);
+								}
+								return new ResultDisplayProperties() {
+									AddSpacingOnAllElements = addSpacingOnAllElements,
+									IgnoreElementList = ignoreElementList,
+									AddPrefixForElementList = addPrefixForElementList,
+									TrimAllWhitespace = trimAllWhitespace
+								};
+							}).FirstOrDefault();
+
+						if (displayProperties == null)
+						{
+							displayProperties = new ResultDisplayProperties();
+						}
+
 						using (Stream resultStream = GenerateStreamFromString(result))
 						{
-							await parseXML(resultStream);
+							await parseAndDisplayResponse(resultStream, displayProperties);
 						}
 					}
 				}
@@ -193,12 +233,13 @@ namespace SOA___Assignment_2___Web_Services
             }
 		}
 
-		private string isValidData(SOAPArgument argument, string dataType)
+		private string isValidData(SOAPArgument argument)
 		{
 			string errorMessage = string.Empty;
 			bool isValidData = false;
+			bool isCustomValid = true;
 
-			switch (dataType)
+			switch (argument.DataType)
 			{
 				case "int":
 					isValidData = int.TryParse(argument.Value.ToString(), out int i);
@@ -219,7 +260,57 @@ namespace SOA___Assignment_2___Web_Services
 
 			if (!isValidData)
 			{
-				errorMessage = string.Format("Cannot convert \"{0}\" to the data type \"{1}\"", argument.Value.ToString(), dataType);
+				errorMessage = string.Format("Cannot convert \"{0}\" to the data type \"{1}\"", argument.Value.ToString(), argument.DataType);
+			}
+
+			if (isValidData)
+			{
+				if (argument.CustomValidationExpressions.Any())
+				{
+					foreach (string expressionCombo in argument.CustomValidationExpressions)
+					{
+						string expression = expressionCombo.Split(',')[0];
+						string value = expressionCombo.Split(',')[1];
+						int convertedValue = 0;
+						switch (expression)
+						{
+							case "equal":
+								isCustomValid = argument.Value == value;
+								break;
+							case "not_equal":
+								isCustomValid = argument.Value != value;
+								break;
+							case "greater_than":
+								if (int.TryParse(value, out convertedValue))
+								{
+									isCustomValid = int.Parse(argument.Value) > convertedValue;
+								}
+								else
+								{
+									isCustomValid = false;
+								}
+								break;
+							case "less_than":
+								if (int.TryParse(value, out convertedValue))
+								{
+									isCustomValid = int.Parse(argument.Value) < convertedValue;
+								}
+								else
+								{
+									isCustomValid = false;
+								}
+								break;
+							default:
+								break;
+						}
+
+						if (!isCustomValid)
+						{
+							errorMessage = string.Format("The following custom validation has not been met:{0}{1} {2} {3}", Environment.NewLine, argument.UIName, expression, value);
+							break;
+						}
+					}
+				}
 			}
 
 			return errorMessage;
@@ -278,7 +369,7 @@ namespace SOA___Assignment_2___Web_Services
 
         private void populateArguments(string serviceName, string methodName)
         {
-            CurrentArguments = _soapConfig.Descendants("services")
+            _currentArguments = _soapConfig.Descendants("services")
                 .Elements("service")
                 .Elements("name")
                 .Where(e => e.Value == serviceName)
@@ -293,14 +384,19 @@ namespace SOA___Assignment_2___Web_Services
                     string dataName = g.Element("dataName").Value;
                     string uiName = g.Element("uiName").Value;
                     string type = g.Element("type").Value;
-                    SOAPArgument.ArgumentListSource listSource = null;
+					List<string> customValidationExpressions =
+						g.Elements().Where(f => f.Name == "custom_validation").Any()
+						? g.Element("custom_validation").Elements().Select(b => string.Format("{0},{1}", b.Name.ToString(), b.Value)).ToList()
+						: new List<string>();
+
+					SOAPArgument.ArgumentListSource listSource = null;
                     if (type == "list")
                     {
                         var ls = g.Element("listsource");
                         listSource = new SOAPArgument.ArgumentListSource(ls.Element("servicename").Value, ls.Element("displaymember").Value, ls.Element("datamember").Value);
 
                     }
-                    return new SOAPArgument(dataName, uiName, type, listSource);
+                    return new SOAPArgument(dataName, uiName, type, listSource, customValidationExpressions);
                 })
                 .ToList();
 
@@ -320,10 +416,11 @@ namespace SOA___Assignment_2___Web_Services
 		}
 
 		// from msdn <3
-		private async Task parseXML(System.IO.Stream stream)
+		private async Task parseAndDisplayResponse(System.IO.Stream stream, ResultDisplayProperties displayProperties)
 		{
 			XmlReaderSettings settings = new XmlReaderSettings();
 			settings.Async = true;
+			bool ignoreNextText = false;
 
 			using (XmlReader reader = XmlReader.Create(stream, settings))
 			{
@@ -332,18 +429,40 @@ namespace SOA___Assignment_2___Web_Services
 					switch (reader.NodeType)
 					{
 						case XmlNodeType.Element:
-							Console.WriteLine("Start Element {0}", reader.Name);
+							if (displayProperties.IgnoreElementList != null && displayProperties.IgnoreElementList.Contains(reader.Name))
+							{
+								ignoreNextText = true;
+							}
+							else if (displayProperties.AddPrefixForElementList != null && displayProperties.AddPrefixForElementList.ContainsKey(reader.Name))
+							{
+								txtResults.AppendText(string.Format("{0}: ", displayProperties.AddPrefixForElementList[reader.Name]));
+							}
 							break;
 						case XmlNodeType.Text:
-                            txtResults.AppendText(await reader.GetValueAsync() + Environment.NewLine);
-                            //txtResults.Text += await reader.GetValueAsync() + ;
+							if (!ignoreNextText)
+							{
+								string resultText = await reader.GetValueAsync();
+								if (displayProperties.TrimAllWhitespace)
+								{
+									// remove all excess whitespace
+									resultText = Regex.Replace(resultText, @"[ ]{2,}", Environment.NewLine, RegexOptions.Multiline); // when there's 2 or more spaces, interpret as a new line
+								}
+
+								txtResults.AppendText(resultText + Environment.NewLine);
+
+								if (displayProperties.AddSpacingOnAllElements)
+								{
+									txtResults.AppendText(Environment.NewLine);
+								}
+							}
+							else
+							{
+								ignoreNextText = false;
+							}
                             break;
 						case XmlNodeType.EndElement:
-							Console.WriteLine("End Element {0}", reader.Name);
 							break;
 						default:
-							Console.WriteLine("Other node {0} with value {1}",
-											reader.NodeType, reader.Value);
 							break;
 					}
 				}
@@ -358,7 +477,8 @@ namespace SOA___Assignment_2___Web_Services
 
         private void cmbMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            populateArguments(((ComboBoxItem)cmbService.SelectedItem).Text, ((ComboBoxItem)cmbMethod.SelectedItem).Text);
+			_currentMethod = ((ComboBoxItem)cmbMethod.SelectedItem).Text;
+			populateArguments(((ComboBoxItem)cmbService.SelectedItem).Text, _currentMethod);
         }
     }
 }

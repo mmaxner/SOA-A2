@@ -53,6 +53,9 @@
         <type>int</type>
         <dataName>intB</dataName>
         <uiName>2nd Number</uiName>
+		<custom_validation>
+			<not_equal>0</not_equal>
+		</custom_validation>
       </parameter>
     </action>
   </service>
@@ -125,16 +128,22 @@
 				<dataName>word</dataName>
 				<uiName>Word</uiName>
 			</parameter>
+			<resultproperties>
+				<add_line_breaks_on_all_elements>true</add_line_breaks_on_all_elements>
+				<trim_all_spacing>true</trim_all_spacing>
+				<ignore_elements>Id</ignore_elements>
+				<add_prefix_for_elements>Word,Word|Dictionary,Name</add_prefix_for_elements>
+			</resultproperties>
 		</action>
 		<action>
 			<name>DefineInDict</name>
 			<parameter>
-        <type>list</type>
-        <listsource>
-          <servicename>DictionaryList</servicename>
-          <displaymember>Name</displaymember>
-          <datamember>Id</datamember>
-        </listsource>
+				<type>list</type>
+				<listsource>
+				  <servicename>DictionaryList</servicename>
+				  <displaymember>Name</displaymember>
+				  <datamember>Id</datamember>
+				</listsource>
 				<dataName>dictId</dataName>
 				<uiName>Dictionary Id</uiName>
 			</parameter>
@@ -143,16 +152,22 @@
 				<dataName>word</dataName>
 				<uiName>Word</uiName>
 			</parameter>
+			<resultproperties>
+				<add_line_breaks_on_all_elements>true</add_line_breaks_on_all_elements>
+				<trim_all_spacing>true</trim_all_spacing>
+				<ignore_elements>Id</ignore_elements>
+				<add_prefix_for_elements>Word,Word|Dictionary,Name</add_prefix_for_elements>
+			</resultproperties>
 		</action>
 		<action>
 			<name>DictionaryInfo</name>
 			<parameter>
-        <type>list</type>
-        <listsource>
-          <servicename>DictionaryList</servicename>
-          <displaymember>Name</displaymember>
-          <datamember>Id</datamember>
-        </listsource>
+				<type>list</type>
+				<listsource>
+				  <servicename>DictionaryList</servicename>
+				  <displaymember>Name</displaymember>
+				  <datamember>Id</datamember>
+				</listsource>
 				<dataName>dictId</dataName>
 				<uiName>Dictionary Id</uiName>
 			</parameter>
