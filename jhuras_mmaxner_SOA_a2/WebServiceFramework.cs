@@ -10,54 +10,22 @@ using System.IO;
 
 namespace SOA___Assignment_2___Web_Services
 {
-    public class SOAPArgument
-    {
-        public string dataName { get; set; }
-        public string uiName { get; set; }
-        public string value { get; set; }
-        public string type { get; set; }
-        public ArgumentListSource listSource { get; set; }
-        public class ArgumentListSource
-        {
-            public string serviceName { get; set; }
-            public string displayMember { get; set; }
-            public string dataMember { get; set; }
-            public ArgumentListSource(string serviceNameIn, string displayMemberIn, string dataMemberIn)
-            {
-                serviceName = serviceNameIn;
-                displayMember = displayMemberIn;
-                dataMember = dataMemberIn;
-            }
-        }
-
-        public SOAPArgument(string dataNameIn, string uiNameIn, string typeIn, ArgumentListSource listSourceIn)
-        {
-            dataName = dataNameIn;
-            uiName = uiNameIn;
-            type = typeIn;
-            listSource = listSourceIn;
-            value = "";
-        }
-    }
-
-    //https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
-    public class WebServiceFramework
+	//https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
+	public class WebServiceFramework
 	{
-		public static string CallWebService(string url, string action, List<SOAPArgument> parameters, string serviceNamespace)
+		public static string CallWebService(string url, string action, List<SOAPViewerConfig.SOAPParameter> parameters, string serviceNamespace)
 		{
 			string soapResult = string.Empty;
-			XmlDocument soapEnvelopeXml = CreateSoapEnvelope(action, parameters, serviceNamespace);
-			HttpWebRequest webRequest = CreateWebRequest(url, action, serviceNamespace);
-			InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
+			XmlDocument soapEnvelopeXml = createSoapEnvelope(action, parameters, serviceNamespace);
+			HttpWebRequest webRequest = createWebRequest(url, action, serviceNamespace);
+			insertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
 
-			// begin async call to web request.
+			// begin async call to web request
 			IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
 
-			// suspend this thread until call is complete. You might want to
-			// do something usefull here like update your UI.
+			// suspend this thread until call is complete
 			asyncResult.AsyncWaitHandle.WaitOne();
-
-			// get the response from the completed web request.
+            
 			using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
 			{
 				using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
@@ -69,7 +37,7 @@ namespace SOA___Assignment_2___Web_Services
 			return soapResult;
 		}
 
-		private static HttpWebRequest CreateWebRequest(string url, string action, string serviceNamespace)
+		private static HttpWebRequest createWebRequest(string url, string action, string serviceNamespace)
 		{
 			HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
 			webRequest.Headers.Add("SOAPAction", serviceNamespace + action);
@@ -79,7 +47,7 @@ namespace SOA___Assignment_2___Web_Services
 			return webRequest;
 		}
 
-		private static XmlDocument CreateSoapEnvelope(string action, List<SOAPArgument> parameters, string serviceNamespace)
+		private static XmlDocument createSoapEnvelope(string action, List<SOAPViewerConfig.SOAPParameter> parameters, string serviceNamespace)
 		{
 			XmlDocument soapEnvelopeDocument = new XmlDocument();
 			string loadXmlData =
@@ -91,7 +59,7 @@ namespace SOA___Assignment_2___Web_Services
 			// do this part in a for loop for however many arguments we need?
             for (int i = 0; i < parameters.Count; i++)
             {
-                loadXmlData +=  string.Format("<{0}>{1}</{0}>", parameters[i].dataName, parameters[i].value);
+                loadXmlData +=  string.Format("<{0}>{1}</{0}>", parameters[i].DataName, parameters[i].Value);
             }
 			loadXmlData += string.Format(@"</{0}>", action);
 			loadXmlData +=
@@ -101,7 +69,7 @@ namespace SOA___Assignment_2___Web_Services
 			return soapEnvelopeDocument;
 		}
 
-		private static void InsertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml, HttpWebRequest webRequest)
+		private static void insertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml, HttpWebRequest webRequest)
 		{
 			using (Stream stream = webRequest.GetRequestStream())
 			{
