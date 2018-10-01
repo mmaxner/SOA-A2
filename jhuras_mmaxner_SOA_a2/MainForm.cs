@@ -50,14 +50,17 @@ namespace SOA___Assignment_2___Web_Services
             // load all settings in the xml config file
             loadSoapConfig();
 
-            // populate combo box 1 with the services available
-            populateServices();
+            if (config != null)
+            {
+                // populate combo box 1 with the services available
+                populateServices();
 
-			// populate combo box 2 with a list of methods from the first service
-			populateActions();
+                // populate combo box 2 with a list of methods from the first service
+                populateActions();
 
-            // generate controls for the parameters of the first method
-            GenerateArgumentControls();
+                // generate controls for the parameters of the first method
+                GenerateArgumentControls();
+            }
         }
 
         /// <summary>

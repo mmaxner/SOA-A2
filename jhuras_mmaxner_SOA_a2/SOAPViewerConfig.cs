@@ -59,7 +59,7 @@ namespace SOA___Assignment_2___Web_Services
                 public string DataMember { get; set; }
             }
         }
-
+        
         /// <summary>
         ///     The list of services supported by this config file
         /// </summary>
