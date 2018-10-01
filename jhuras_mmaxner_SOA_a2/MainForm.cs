@@ -16,7 +16,6 @@ namespace SOA___Assignment_2___Web_Services
 {
 	public partial class MainForm : System.Windows.Forms.Form
 	{
-        private readonly string _CONFIG_FILENAME = "config.xml";
         private readonly Point ARGUMENT_LABEL_LOCATION = new Point(10, 15);
         private readonly Size ARGUMENT_LABEL_SIZE = new Size(100, 20);
         private readonly Size ARGUMENT_OFFSET = new Size(0, 30);
@@ -26,6 +25,17 @@ namespace SOA___Assignment_2___Web_Services
         public SOAPViewerConfig config;
         public SOAPViewerConfig.SOAPService CurrentService;
         public SOAPViewerConfig.SOAPAction CurrentAction;
+
+        private const string CONFIG_FILENAME = "config.xml";
+		private const string ERROR_CANNOT_CONVERT_ARGUMENT = "Cannot convert \"{0}\" to the data type \"{1}\"";
+		private const string ERROR_CONNECTING_TO_SERVICE = "Error connecting to SOAP service";
+		private const string ERROR_PARSING_ARGUMENT = "Error parsing argument(s)";
+		private const string ERROR_DEFAULT = "Something went wrong";
+		private const string DATA_TYPE_IDENTIFIER_INT = "int";
+		private const string DATA_TYPE_IDENTIFIER_DECIMAL = "decimal";
+		private const string DATA_TYPE_IDENTIFIER_STRING = "string";
+		private const string DATA_TYPE_IDENTIFIER_DATETIME = "date";
+		private const string DATA_TYPE_IDENTIFIER_LIST = "list";
 
         public MainForm()
 		{
@@ -69,10 +79,10 @@ namespace SOA___Assignment_2___Web_Services
                     // based on the type of parameter, create and data bind a control for the user to enter a value with
                     switch (CurrentAction.Parameters[p].DataType)
                     {
-                        case "list":
-                            // lists are displayed in a combobox
-                            // the items in the combo box are populated by another action, detailed in the list source of the Current Argument
-                            ComboBox ListPicker = new ComboBox();
+                        // lists are displayed in a combobox
+                        // the items in the combo box are populated by another action, detailed in the list source of the Current Argument
+                        case DATA_TYPE_IDENTIFIER_LIST:
+                            ComboBox listPicker = new ComboBox();
 
                             // retrieve the list of items from the service
                             string XMLList = WebServiceFramework.CallWebService(
@@ -97,42 +107,40 @@ namespace SOA___Assignment_2___Web_Services
 
                             // set the data source to the dictionary, and bind to the CurrentArgument
                             bindingSource1.DataSource = dataSource;
-                            ListPicker.DataSource = bindingSource1;
-                            ListPicker.DisplayMember = "Value";
-                            ListPicker.ValueMember = "Key";
-                            ListPicker.DataBindings.Add("SelectedValue", CurrentAction.Parameters[p], "Value");
+                            listPicker.DataSource = bindingSource1;
+                            listPicker.DisplayMember = "Value";
+                            listPicker.ValueMember = "Key";
 
-                            control = ListPicker;
+                            listPicker.DataBindings.Add("SelectedValue", CurrentAction.Parameters[p], "Value");
+
+                            control = listPicker;
                             break;
-                        case "date":
-                            // dates use a datetimepicker
-                            DateTimePicker DatePicker = new DateTimePicker();
-                            DatePicker.Format = DateTimePickerFormat.Custom;
-                            DatePicker.CustomFormat = "yyyy-MM-dd";
+                        case DATA_TYPE_IDENTIFIER_DATETIME:
+                            DateTimePicker datePicker = new DateTimePicker();
+                            datePicker.Format = DateTimePickerFormat.Custom;
+                            datePicker.CustomFormat = "yyyy-MM-dd";
                             CurrentAction.Parameters[p].Value = DateTime.Now.ToString("yyyy-MM-dd");
 
                             Binding binding = new Binding("Value", CurrentAction.Parameters[p], "Value", true);
 
-                            DatePicker.DataBindings.Add(binding);
+                            datePicker.DataBindings.Add(binding);
 
-                            control = DatePicker;
+                            control = datePicker;
                             break;
-                        case "int":
-                            // ints used a numeric up/down
-                            NumericUpDown NumberPicker = new NumericUpDown();
-                            NumberPicker.Minimum = int.MinValue;
-                            NumberPicker.Maximum = int.MaxValue;
+                        case DATA_TYPE_IDENTIFIER_INT:
+                            NumericUpDown numberPicker = new NumericUpDown();
+                            numberPicker.Minimum = int.MinValue;
+                            numberPicker.Maximum = int.MaxValue;
                             CurrentAction.Parameters[p].Value = "0";
 
-                            NumberPicker.DataBindings.Add("Value", CurrentAction.Parameters[p], "Value", true, DataSourceUpdateMode.OnPropertyChanged);
-                            control = NumberPicker;
+                            numberPicker.DataBindings.Add("Value", CurrentAction.Parameters[p], "Value", true, DataSourceUpdateMode.OnPropertyChanged);
+                            control = numberPicker;
                             break;
-                        case "string":
+                        case DATA_TYPE_IDENTIFIER_STRING:
                         default:
-                            // strings, and anything else, are a free form textbox
-                            TextBox Text = new TextBox();
-                            Text.DataBindings.Add("Text", CurrentAction.Parameters[p], "Value");
-                            control = Text;
+                            TextBox textBox = new TextBox();
+                            textBox.DataBindings.Add("Text", CurrentAction.Parameters[p], "Value");
+                            control = textBox;
                             break;
                     }
 
@@ -144,10 +152,14 @@ namespace SOA___Assignment_2___Web_Services
                     grpArgumentControls.Controls.Add(control);
                 }
             }
-            catch (Exception ex)
+            catch (System.Net.WebException ex)
             {
-                MessageBox.Show(this, ex.Message, "Error connecting to SOAP service", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                MessageBox.Show(this, ex.Message, ERROR_CONNECTING_TO_SERVICE, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
+			catch (Exception ex)
+			{
+				MessageBox.Show(this, ex.Message, ERROR_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+			}
 
         }
 
@@ -176,7 +188,6 @@ namespace SOA___Assignment_2___Web_Services
 					if (!string.IsNullOrEmpty(result))
 					{
 						txtResults.Clear();
-
 						using (Stream resultStream = GenerateStreamFromString(result))
 						{
 							await parseAndDisplayResponse(resultStream);
@@ -185,12 +196,16 @@ namespace SOA___Assignment_2___Web_Services
 				}
 				else
 				{
-					MessageBox.Show(this, errorMessage, "Error parsing argument(s)", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+					MessageBox.Show(this, errorMessage, ERROR_PARSING_ARGUMENT, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
 				}
 			}
-            catch (Exception ex)
+			catch (System.Net.WebException ex)
+			{
+				MessageBox.Show(this, ex.Message, ERROR_CONNECTING_TO_SERVICE, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+			}
+			catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Error connecting to SOAP service", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+				MessageBox.Show(this, ex.Message, ERROR_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
 		}
 
@@ -202,17 +217,17 @@ namespace SOA___Assignment_2___Web_Services
 
 			switch (argument.DataType)
 			{
-				case "int":
+				case DATA_TYPE_IDENTIFIER_INT:
 					isValidData = int.TryParse(argument.Value.ToString(), out int i);
 					break;
-				case "date":
+				case DATA_TYPE_IDENTIFIER_DATETIME:
 					isValidData = DateTime.TryParse(argument.Value.ToString(), out DateTime j);
 					break;
-				case "decimal":
+				case DATA_TYPE_IDENTIFIER_DECIMAL:
 					isValidData = decimal.TryParse(argument.Value.ToString(), out decimal k);
 					break;
-				case "string":
-				case "list":
+				case DATA_TYPE_IDENTIFIER_STRING:
+				case DATA_TYPE_IDENTIFIER_LIST:
 					isValidData = true;
 					break;
 				default:
@@ -221,7 +236,7 @@ namespace SOA___Assignment_2___Web_Services
 
 			if (!isValidData)
 			{
-				errorMessage = string.Format("Cannot convert \"{0}\" to the data type \"{1}\"", argument.Value.ToString(), argument.DataType);
+				errorMessage = string.Format(ERROR_CANNOT_CONVERT_ARGUMENT, argument.Value.ToString(), argument.DataType);
 			}
 
 			if (isValidData)
@@ -281,7 +296,7 @@ namespace SOA___Assignment_2___Web_Services
         {
             try
             {
-                config = SOAPViewerConfig.LoadFromFile(_CONFIG_FILENAME);
+                config = SOAPViewerConfig.LoadFromFile(CONFIG_FILENAME);
             }
             catch (Exception ex)
             {
@@ -291,7 +306,7 @@ namespace SOA___Assignment_2___Web_Services
 
 		private void populateServices()
 		{
-            for (int i = 0; i <config.Services.Count; i++)
+            for (int i = 0; i < config.Services.Count; i++)
             {
                 cmbService.Items.Add(new ComboBoxItem() { Text = config.Services[i].Name, Value = i.ToString() });
             }
@@ -318,38 +333,6 @@ namespace SOA___Assignment_2___Web_Services
 
         private void populateArguments()
         {
-     //       _currentArguments = _soapConfig.Descendants("services")
-     //           .Elements("service")
-     //           .Elements("name")
-     //           .Where(e => e.Value == serviceName)
-     //           .Ancestors("service")
-     //           .Elements("action")
-     //           .Elements("name")
-     //           .Where(f => f.Value == methodName)
-     //           .Ancestors("action")
-     //           .Elements("parameter")
-     //           .Select(g =>
-     //           {
-     //               string dataName = g.Element("dataName").Value;
-     //               string uiName = g.Element("uiName").Value;
-     //               string type = g.Element("type").Value;
-					//List<string> customValidationExpressions =
-					//	g.Elements().Where(f => f.Name == "custom_validation").Any()
-					//	? g.Element("custom_validation").Elements().Select(b => string.Format("{0},{1}", b.Name.ToString(), b.Value)).ToList()
-					//	: new List<string>();
-
-					//SOAPArgument.ArgumentListSource listSource = null;
-     //               if (type == "list")
-     //               {
-     //                   var ls = g.Element("listsource");
-     //                   listSource = new SOAPArgument.ArgumentListSource(ls.Element("servicename").Value, ls.Element("displaymember").Value, ls.Element("datamember").Value);
-
-     //               }
-     //               return new SOAPArgument(dataName, uiName, type, listSource, customValidationExpressions);
-     //           })
-     //           .ToList();
-
-
             GenerateArgumentControls();
         }
 

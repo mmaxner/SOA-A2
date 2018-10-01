@@ -78,24 +78,33 @@ namespace SOA___Assignment_2___Web_Services
                         Actions[a].Elements("resultproperties")
                             .Select(z =>
                             {
-                                bool addSpacingOnAllElements = bool.Parse(z.Element("add_line_breaks_on_all_elements").Value);
-                                bool trimAllWhitespace = bool.Parse(z.Element("trim_all_spacing").Value);
-                                List<string> ignoreElementList = z.Element("ignore_elements").Value.Split(',').ToList();
-                                Dictionary<string, string> addPrefixForElementList = new Dictionary<string, string>();
-                                var prefixList = z.Element("add_prefix_for_elements").Value.Split('|').ToList();
-                                foreach (var prefixCombo in prefixList)
+                                SOAPAction.ResultDisplayProperties displayProperties = new SOAPAction.ResultDisplayProperties();
+                                if (z.Element("add_line_breaks_on_all_elements") != null)
                                 {
-                                    string value = prefixCombo.Split(',')[0];
-                                    string key = prefixCombo.Split(',')[1];
-                                    addPrefixForElementList.Add(key, value);
+                                    displayProperties.AddSpacingOnAllElements = bool.Parse(z.Element("add_line_breaks_on_all_elements").Value);
                                 }
-                                return new SOAPAction.ResultDisplayProperties()
+                                if (z.Element("trim_all_spacing") != null)
                                 {
-                                    AddSpacingOnAllElements = addSpacingOnAllElements,
-                                    IgnoreElementList = ignoreElementList,
-                                    AddPrefixForElementList = addPrefixForElementList,
-                                    TrimAllWhitespace = trimAllWhitespace
-                                };
+                                    displayProperties.TrimAllWhitespace = bool.Parse(z.Element("trim_all_spacing").Value);
+                                }
+                                if (z.Element("ignore_elements") != null)
+                                {
+                                    displayProperties.IgnoreElementList = z.Element("ignore_elements").Value.Split(',').ToList();
+                                }
+                                if (z.Element("add_prefix_for_elements") != null)
+                                {
+                                    Dictionary<string, string> addPrefixForElementList = new Dictionary<string, string>();
+                                    var prefixList = z.Element("add_prefix_for_elements").Value.Split('|').ToList();
+                                    foreach (var prefixCombo in prefixList)
+                                    {
+                                        string value = prefixCombo.Split(',')[0];
+                                        string key = prefixCombo.Split(',')[1];
+                                        addPrefixForElementList.Add(key, value);
+                                    }
+                                    displayProperties.AddPrefixForElementList = addPrefixForElementList;
+                                }
+
+                                return displayProperties;
                             }).FirstOrDefault();
                     if (Action.DisplayProperties == null)
                     {

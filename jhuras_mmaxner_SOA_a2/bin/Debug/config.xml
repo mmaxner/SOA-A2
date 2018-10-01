@@ -131,7 +131,7 @@
 			<resultproperties>
 				<add_line_breaks_on_all_elements>true</add_line_breaks_on_all_elements>
 				<trim_all_spacing>true</trim_all_spacing>
-				<ignore_elements>Id</ignore_elements>
+				<ignore_elements>Id,Word</ignore_elements>
 				<add_prefix_for_elements>Word,Word|Dictionary,Name</add_prefix_for_elements>
 			</resultproperties>
 		</action>
@@ -155,7 +155,7 @@
 			<resultproperties>
 				<add_line_breaks_on_all_elements>true</add_line_breaks_on_all_elements>
 				<trim_all_spacing>true</trim_all_spacing>
-				<ignore_elements>Id</ignore_elements>
+				<ignore_elements>Id,Word</ignore_elements>
 				<add_prefix_for_elements>Word,Word|Dictionary,Name</add_prefix_for_elements>
 			</resultproperties>
 		</action>
@@ -171,12 +171,17 @@
 				<dataName>dictId</dataName>
 				<uiName>Dictionary Id</uiName>
 			</parameter>
+			<resultproperties>
+				<add_line_breaks_on_all_elements>true</add_line_breaks_on_all_elements>
+				<trim_all_spacing>true</trim_all_spacing>
+			</resultproperties>
 		</action>
 		<action>
 			<name>DictionaryList</name>
-		</action>
-		<action>
-			<name>DictionaryListExtended</name>
+			<resultproperties>
+				<add_line_breaks_on_all_elements>true</add_line_breaks_on_all_elements>
+				<trim_all_spacing>true</trim_all_spacing>
+			</resultproperties>
 		</action>
 		<action>
 			<name>Match</name>
@@ -186,49 +191,58 @@
 				<uiName>Word</uiName>
 			</parameter>
 			<parameter>
-        <type>list</type>
-        <listsource>
-          <servicename>StrategyList</servicename>
-          <displaymember>Id</displaymember>
-          <datamember>Id</datamember>
-        </listsource>
+				<type>list</type>
+				<listsource>
+				  <servicename>StrategyList</servicename>
+				  <displaymember>Id</displaymember>
+				  <datamember>Id</datamember>
+				</listsource>
 				<dataName>strategy</dataName>
 				<uiName>Strategy</uiName>
 			</parameter>
+			<resultproperties>
+				<add_line_breaks_on_all_elements>true</add_line_breaks_on_all_elements>
+				<trim_all_spacing>true</trim_all_spacing>
+			</resultproperties>
 		</action>
 		<action>
 			<name>MatchInDict</name>
 			<parameter>
-        <type>list</type>
-        <listsource>
-          <servicename>DictionaryList</servicename>
-          <displaymember>Name</displaymember>
-          <datamember>Id</datamember>
-        </listsource>
+				<type>list</type>
+				<listsource>
+				  <servicename>DictionaryList</servicename>
+				  <displaymember>Name</displaymember>
+				  <datamember>Id</datamember>
+				</listsource>
 				<dataName>dictId</dataName>
 				<uiName>Dictionary Id</uiName>
 			</parameter>
 			<parameter>
-        <type>string</type>
-        <dataName>word</dataName>
-        <uiName>Word</uiName>
-        </parameter>
+				<type>string</type>
+				<dataName>word</dataName>
+				<uiName>Word</uiName>
+			</parameter>
 			<parameter>
-        <type>list</type>
-        <listsource>
-          <servicename>StrategyList</servicename>
-          <displaymember>Id</displaymember>
-          <datamember>Id</datamember>
-        </listsource>
+				<type>list</type>
+				<listsource>
+				  <servicename>StrategyList</servicename>
+				  <displaymember>Id</displaymember>
+				  <datamember>Id</datamember>
+				</listsource>
 				<dataName>strategy</dataName>
 				<uiName>Strategy</uiName>
 			</parameter>
+			<resultproperties>
+				<trim_all_spacing>true</trim_all_spacing>
+				<ignore_elements>DictionaryId</ignore_elements>
+			</resultproperties>
 		</action>
 		<action>
 			<name>ServerInfo</name>
-		</action>
-		<action>
-			<name>StrategyList</name>
+			<resultproperties>
+				<add_line_breaks_on_all_elements>true</add_line_breaks_on_all_elements>
+				<trim_all_spacing>true</trim_all_spacing>
+			</resultproperties>
 		</action>
 	</service>
 </services>
