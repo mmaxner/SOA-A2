@@ -8,16 +8,25 @@ using System.Xml.Linq;
 
 namespace SOA___Assignment_2___Web_Services
 {
+    /// <summary>
+    ///     Parses and stores the data in a config file for a SOAP viewer
+    /// </summary>
     public class SOAPViewerConfig
     {
+        /// <summary>
+        ///     The details for one SOAP service
+        /// </summary>
         public class SOAPService
         {
-            public string Name { get; set; }
-            public string URL { get; set; }
-            public string NameSpace { get; set; }
-            public List<SOAPAction> Actions { get; set; }
+            public string Name { get; set; }    // a display name
+            public string URL { get; set; }     // the URL of the service
+            public string NameSpace { get; set; }   // the namespace to use when calling the service
+            public List<SOAPAction> Actions { get; set; }   // a list of Actions supported for the service
         }
 
+        /// <summary>
+        ///     The details for one Action provided by a SOAP Service
+        /// </summary>
         public class SOAPAction
         {
             public class ResultDisplayProperties
@@ -28,19 +37,19 @@ namespace SOA___Assignment_2___Web_Services
                 public Dictionary<string, string> AddPrefixForElementList { get; set; }
             }
 
-            public string Name { get; set; }
-            public ResultDisplayProperties DisplayProperties { get; set; }
-            public List<SOAPParameter> Parameters { get; set; }
+            public string Name { get; set; }    // the name of the method
+            public ResultDisplayProperties DisplayProperties { get; set; }      // special rules for displaying the results ofthe method
+            public List<SOAPParameter> Parameters { get; set; }     // the parameters needed for the method
         }
 
         public class SOAPParameter
         {
-            public string DataName { get; set; }
-            public string UIName { get; set; }
-            public string Value { get; set; }
-            public string DataType { get; set; }
-            public List<string> CustomValidationExpressions { get; set; }
-            public ArgumentListSource ListSource { get; set; }
+            public string DataName { get; set; }        // the name of the parameter when sent in a SOAP envelope
+            public string UIName { get; set; }          // the name of the parameter when displayed to the user
+            public string Value { get; set; }           // the Value entered by the user
+            public string DataType { get; set; }        // the data type of the parameter
+            public List<string> CustomValidationExpressions { get; set; }   // special rules for validating the Value
+            public ArgumentListSource ListSource { get; set; }      // special rules for retrieving a list of possible values from the service
 
 
             public class ArgumentListSource
@@ -51,27 +60,38 @@ namespace SOA___Assignment_2___Web_Services
             }
         }
 
-
+        /// <summary>
+        ///     The list of services supported by this config file
+        /// </summary>
         public List<SOAPService> Services;
 
+        /// <summary>
+        ///     Reads a config file, parses it, and populates itself with the data it reads.
+        ///     Returns a SOAPViewerConfig with all the details from the config file.
+        /// </summary>
+        /// <param name="file">filename to parse data from</param>
+        /// <returns></returns>
         public static SOAPViewerConfig LoadFromFile(string file)
         {
             SOAPViewerConfig Config = new SOAPViewerConfig();
             Config.Services = new List<SOAPService>();
             XDocument ConfigContents = XDocument.Load(file);
 
+            // for each service node
             List<XElement> services = ConfigContents.Descendants("services").Elements("service").ToList();
-
             for (int s = 0; s < services.Count; s++)
             {
+                // read the service details
                 SOAPService Service = new SOAPService();
                 Service.Name = services[s].Element("name").Value;
                 Service.URL = services[s].Element("url").Value;
                 Service.NameSpace = services[s].Element("namespace").Value;
                 Service.Actions = new List<SOAPAction>();
+                // for each action node in this service
                 List<XElement> Actions = services[s].Elements("action").ToList();
                 for (int a = 0; a < Actions.Count; a++)
                 {
+                    // read the action details
                     SOAPAction Action = new SOAPAction();
                     Action.Name = Actions[a].Element("name").Value;
                     Action.DisplayProperties = 
@@ -112,10 +132,11 @@ namespace SOA___Assignment_2___Web_Services
                     }
                     Action.Parameters = new List<SOAPParameter>();
 
-
+                    // for each parameter node in this action
                     List<XElement> Parameters = Actions[a].Elements("parameter").ToList();
                     for (int p = 0; p < Parameters.Count; p++)
                     {
+                        // read the parameter details
                         SOAPParameter Parameter = new SOAPParameter();
                         Parameter.DataName = Parameters[p].Element("dataName").Value;
                         Parameter.UIName = Parameters[p].Element("uiName").Value;
@@ -141,14 +162,17 @@ namespace SOA___Assignment_2___Web_Services
                                 .ToList()
                             :
                                 new List<string>();
-
+                        // add the parameter details to the Action
                         Action.Parameters.Add(Parameter);
                     }
+                    // Add the action to the service
                     Service.Actions.Add(Action);
                 }
+                // add the ervice to the list of supported services
                 Config.Services.Add(Service);
             }
 
+            //return the populated object
             return Config;
         }
     }

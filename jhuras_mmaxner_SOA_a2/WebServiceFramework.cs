@@ -10,9 +10,19 @@ using System.IO;
 
 namespace SOA___Assignment_2___Web_Services
 {
+    // handles creating, sending, and receiving SOAP messages
+    // based on:
 	//https://stackoverflow.com/questions/4791794/client-to-send-soap-request-and-received-response
 	public class WebServiceFramework
 	{
+        /// <summary>
+        ///     Makes a SOAP request
+        /// </summary>
+        /// <param name="url">URL of the service</param>
+        /// <param name="action">the method being called</param>
+        /// <param name="parameters">the parameters being sent</param>
+        /// <param name="serviceNamespace">the namespace to be used</param>
+        /// <returns></returns>
 		public static string CallWebService(string url, string action, List<SOAPViewerConfig.SOAPParameter> parameters, string serviceNamespace)
 		{
 			string soapResult = string.Empty;
@@ -37,6 +47,9 @@ namespace SOA___Assignment_2___Web_Services
 			return soapResult;
 		}
 
+        /// <summary>
+        ///     creates a SOAP request
+        /// </summary>
 		private static HttpWebRequest createWebRequest(string url, string action, string serviceNamespace)
 		{
 			HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -47,6 +60,9 @@ namespace SOA___Assignment_2___Web_Services
 			return webRequest;
 		}
 
+        /// <summary>
+        ///  Generates the formatted SOAP envelope
+        /// </summary>
 		private static XmlDocument createSoapEnvelope(string action, List<SOAPViewerConfig.SOAPParameter> parameters, string serviceNamespace)
 		{
 			XmlDocument soapEnvelopeDocument = new XmlDocument();
@@ -69,6 +85,9 @@ namespace SOA___Assignment_2___Web_Services
 			return soapEnvelopeDocument;
 		}
 
+        /// <summary>
+        ///     adds the SOAP evelope to the web request
+        /// </summary>
 		private static void insertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml, HttpWebRequest webRequest)
 		{
 			using (Stream stream = webRequest.GetRequestStream())

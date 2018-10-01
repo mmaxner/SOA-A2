@@ -442,7 +442,10 @@ namespace SOA___Assignment_2___Web_Services
             populateActions();
         }
 
-        // changes the CurrentAction when the actions combo boc is changed, then re-generates the controls for arguments for the new action
+
+        /// <summary>
+        /// changes the CurrentAction when the actions combo boc is changed, then re-generates the controls for arguments for the new action
+        /// </summary>
         private void cmbMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
             int ActionIndex = int.Parse(((ComboBoxItem)cmbMethod.SelectedItem).Value);
