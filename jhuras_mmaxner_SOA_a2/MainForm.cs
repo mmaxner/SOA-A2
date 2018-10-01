@@ -16,26 +16,32 @@ namespace SOA___Assignment_2___Web_Services
 {
 	public partial class MainForm : System.Windows.Forms.Form
 	{
+        // constants for spacing dynamically generated controls
         private readonly Point ARGUMENT_LABEL_LOCATION = new Point(10, 15);
         private readonly Size ARGUMENT_LABEL_SIZE = new Size(100, 20);
         private readonly Size ARGUMENT_OFFSET = new Size(0, 30);
         private readonly Size ARGUMENT_TEXTBOX_OFFSET = new Size(100, 0);
         private readonly Size ARGUMENT_TEXTBOX_SIZE = new Size(150, 20);
 
-        public SOAPViewerConfig config;
-        public SOAPViewerConfig.SOAPService CurrentService;
-        public SOAPViewerConfig.SOAPAction CurrentAction;
-
-        private const string CONFIG_FILENAME = "config.xml";
+        // ui constants
 		private const string ERROR_CANNOT_CONVERT_ARGUMENT = "Cannot convert \"{0}\" to the data type \"{1}\"";
 		private const string ERROR_CONNECTING_TO_SERVICE = "Error connecting to SOAP service";
 		private const string ERROR_PARSING_ARGUMENT = "Error parsing argument(s)";
 		private const string ERROR_DEFAULT = "Something went wrong";
-		private const string DATA_TYPE_IDENTIFIER_INT = "int";
+        private const string NO_RESULT_MESSAGE = "The response did not contain any data.";
+
+        // config constants
+        private const string CONFIG_FILENAME = "config.xml";
+        private const string DATA_TYPE_IDENTIFIER_INT = "int";
 		private const string DATA_TYPE_IDENTIFIER_DECIMAL = "decimal";
 		private const string DATA_TYPE_IDENTIFIER_STRING = "string";
 		private const string DATA_TYPE_IDENTIFIER_DATETIME = "date";
 		private const string DATA_TYPE_IDENTIFIER_LIST = "list";
+
+        // objects for tracking state
+        public SOAPViewerConfig config;
+        public SOAPViewerConfig.SOAPService CurrentService;
+        public SOAPViewerConfig.SOAPAction CurrentAction;
 
         public MainForm()
 		{
@@ -44,17 +50,18 @@ namespace SOA___Assignment_2___Web_Services
             // load all settings in the xml config file
             loadSoapConfig();
 
-            // populate combo box 1 with whatever is in the txt file
+            // populate combo box 1 with the services available
             populateServices();
 
-			// populate combo box 2 with a list of methods from the first url in the txt file (selected in combo box 1)
+			// populate combo box 2 with a list of methods from the first service
 			populateActions();
-            
-            populateArguments();
+
+            // generate controls for the parameters of the first method
+            GenerateArgumentControls();
         }
 
         /// <summary>
-        ///     Creates a set of controls for manipulating arguments to be sent in a SOAP call, based on CurrentArguments.
+        ///     Creates a set of controls for manipulating arguments to be sent in a SOAP call, based on the CurrentAction.
         ///     Attaches thse controls to grpArgumentControls, after clearing existing controls from it.
         /// </summary>
         public void GenerateArgumentControls()
@@ -163,15 +170,18 @@ namespace SOA___Assignment_2___Web_Services
 
         }
 
+        /// <summary>
+        ///     Sends a SOAP request when the Invoke button is pressed.
+        ///     The results are parsed, and displayed in the bottom text-area
+        /// </summary>
 		private async void btnInvoke_ClickAsync(object sender, EventArgs e)
 		{
             try
             {
-                string url = (cmbService.SelectedItem as ComboBoxItem).Value;
-                string action = (cmbMethod.SelectedItem as ComboBoxItem).Value;
 				string errorMessage = string.Empty;
 				bool isAllValidData = true;
 
+                // validate the arguments
 				foreach (SOAPViewerConfig.SOAPParameter argument in CurrentAction.Parameters)
 				{
 					errorMessage = isValidData(argument);
@@ -184,15 +194,20 @@ namespace SOA___Assignment_2___Web_Services
 
 				if (isAllValidData)
 				{
+                    // make the SOAP request
 					string result = WebServiceFramework.CallWebService(CurrentService.URL, CurrentAction.Name, CurrentAction.Parameters, CurrentService.NameSpace);
-					if (!string.IsNullOrEmpty(result))
+                    // put the appropriate text the text area
+                    txtResults.Clear();
+                    if (!string.IsNullOrEmpty(result))
 					{
-						txtResults.Clear();
 						using (Stream resultStream = GenerateStreamFromString(result))
 						{
 							await parseAndDisplayResponse(resultStream);
 						}
-					}
+					} else
+                    {
+                        txtResults.AppendText(NO_RESULT_MESSAGE);
+                    }
 				}
 				else
 				{
@@ -209,12 +224,16 @@ namespace SOA___Assignment_2___Web_Services
             }
 		}
 
+        /// <summary>
+        ///     validates a single SOAPParameter based on its Value, DataType, and any CustomValidationExpressions it has
+        /// </summary>
 		private string isValidData(SOAPViewerConfig.SOAPParameter argument)
 		{
 			string errorMessage = string.Empty;
 			bool isValidData = false;
 			bool isCustomValid = true;
 
+            // validate its type
 			switch (argument.DataType)
 			{
 				case DATA_TYPE_IDENTIFIER_INT:
@@ -241,6 +260,7 @@ namespace SOA___Assignment_2___Web_Services
 
 			if (isValidData)
 			{
+                // validate any CustomValidationExperssions, if any
 				if (argument.CustomValidationExpressions.Any())
 				{
 					foreach (string expressionCombo in argument.CustomValidationExpressions)
@@ -292,6 +312,9 @@ namespace SOA___Assignment_2___Web_Services
 			return errorMessage;
 		}
 
+        /// <summary>
+        ///     Loads the informtion from the config file in CONFIG_FILENAME
+        /// </summary>
         private void loadSoapConfig()
         {
             try
@@ -304,6 +327,10 @@ namespace SOA___Assignment_2___Web_Services
             }
         }
 
+        /// <summary>
+        ///     Populates the combo box for services with items that list the service name, and when selected indicate
+        ///     the selected service's index in the list of services.
+        /// </summary>
 		private void populateServices()
 		{
             for (int i = 0; i < config.Services.Count; i++)
@@ -316,6 +343,10 @@ namespace SOA___Assignment_2___Web_Services
             }
         }
 
+        /// <summary>
+        ///     Populates the combo box for actions with items that list the action name, and when selected indicate
+        ///     the selected actions's index in the list of actions for the current service.
+        /// </summary>
 		private void populateActions()
 		{
             cmbMethod.Items.Clear();
@@ -331,11 +362,9 @@ namespace SOA___Assignment_2___Web_Services
             }
         }
 
-        private void populateArguments()
-        {
-            GenerateArgumentControls();
-        }
-
+        /// <summary>
+        ///     Produces a stream from a basic string.
+        /// </summary>
         //https://stackoverflow.com/questions/1879395/how-do-i-generate-a-stream-from-a-string
         private Stream GenerateStreamFromString(string s)
 		{
@@ -402,6 +431,10 @@ namespace SOA___Assignment_2___Web_Services
 				}
 			}
 		}
+
+        /// <summary>
+        ///     changes the CurrentService when the services combo box is changed, then re-populates the Actions combo box with the actions for the new service
+        /// </summary>
         private void cmbService_SelectedIndexChanged(object sender, EventArgs e)
         {
             int serviceIndex = int.Parse(((ComboBoxItem)cmbService.SelectedItem).Value);
@@ -409,11 +442,12 @@ namespace SOA___Assignment_2___Web_Services
             populateActions();
         }
 
+        // changes the CurrentAction when the actions combo boc is changed, then re-generates the controls for arguments for the new action
         private void cmbMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
             int ActionIndex = int.Parse(((ComboBoxItem)cmbMethod.SelectedItem).Value);
             CurrentAction = CurrentService.Actions[ActionIndex];
-			populateArguments();
+            GenerateArgumentControls();
         }
     }
 }
