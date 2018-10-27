@@ -1,7 +1,7 @@
 <services>
   <service>
     <name>Text Casing</name>
-    <url>http://localhost/webservices/TextService.asmx</url>
+    <url>http://10.113.21.174/webservices/TextService.asmx</url>
     <namespace>http://tempuri.org/</namespace>
     <action>
       <name>CaseConvert</name>
@@ -19,7 +19,7 @@
   </service>
   <service>
     <name>Vinnie's Loan Service</name>
-    <url>http://localhost/webservices/VinniesLoanService.asmx</url>
+    <url>http://10.113.21.174/webservices/VinniesLoanService.asmx</url>
     <namespace>http://tempuri.org/</namespace>
     <action>
       <name>LoanPayment</name>
@@ -31,7 +31,7 @@
       <parameter>
         <type>string</type>
         <dataName>rate</dataName>
-        <uiName>Interest Rate (15% = 0.15)</uiName>
+        <uiName>Interest Rate</uiName>
       </parameter>
       <parameter>
         <type>int</type>
@@ -42,7 +42,7 @@
   </service>
   <service>
     <name>IP Information</name>
-    <url>http://localhost/webservices/ResolveIP.asmx</url>
+    <url>http://10.113.21.174/webservices/ResolveIP.asmx</url>
     <namespace>http://tempuri.org/</namespace>
     <action>
       <name>GetInfo</name>
