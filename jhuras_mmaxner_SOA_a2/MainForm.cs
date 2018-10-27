@@ -29,6 +29,7 @@ namespace SOA___Assignment_2___Web_Services
 		private const string ERROR_PARSING_ARGUMENT = "Error parsing argument(s)";
 		private const string ERROR_DEFAULT = "Something went wrong";
         private const string NO_RESULT_MESSAGE = "The response did not contain any data.";
+        private const string SOAP_FAULT = "SOAP Fault";
 
         // config constants
         private const string CONFIG_FILENAME = "config.xml";
@@ -221,6 +222,7 @@ namespace SOA___Assignment_2___Web_Services
 			catch (System.Net.WebException ex)
 			{
                 string message = ex.Message;
+                string caption = ERROR_CONNECTING_TO_SERVICE;
                 if (ex.Response != null)
                 {
                     string response;
@@ -232,9 +234,10 @@ namespace SOA___Assignment_2___Web_Services
                     if (xdoc.Descendants("faultstring").Count() > 0)
                     {
                         message = xdoc.Descendants("faultstring").First().Value;
+                        caption = SOAP_FAULT;
                     }
                 }
-                MessageBox.Show(this, message, ERROR_CONNECTING_TO_SERVICE, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                MessageBox.Show(this, message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
 			}
 			catch (Exception ex)
             {
