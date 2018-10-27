@@ -164,6 +164,7 @@ namespace SOA___Assignment_2___Web_Services
             }
             catch (System.Net.WebException ex)
             {
+
                 MessageBox.Show(this, ex.Message, ERROR_CONNECTING_TO_SERVICE, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
 			catch (Exception ex)
@@ -222,9 +223,15 @@ namespace SOA___Assignment_2___Web_Services
                 string message = ex.Message;
                 if (ex.Response != null)
                 {
+                    string response;
                     using (StreamReader responseReader = new StreamReader(ex.Response.GetResponseStream()))
                     {
-                        message = responseReader.ReadToEnd();
+                        response = responseReader.ReadToEnd();
+                    }
+                    XDocument xdoc = XDocument.Parse(response);
+                    if (xdoc.Descendants("faultstring").Count() > 0)
+                    {
+                        message = xdoc.Descendants("faultstring").First().Value;
                     }
                 }
                 MessageBox.Show(this, message, ERROR_CONNECTING_TO_SERVICE, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);

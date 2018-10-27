@@ -20,7 +20,7 @@
   <service>
     <name>Vinnie's Loan Service</name>
     <url>http://localhost/webservices/VinniesLoanService.asmx</url>
-    <namespace>http://tempur.org/</namespace>
+    <namespace>http://tempuri.org/</namespace>
     <action>
       <name>LoanPayment</name>
       <parameter>
@@ -37,6 +37,19 @@
         <type>int</type>
         <dataName>payments</dataName>
         <uiName>Monthly Payments</uiName>
+      </parameter>
+    </action>
+  </service>
+  <service>
+    <name>IP Information</name>
+    <url>http://localhost/webservices/ResolveIP.asmx</url>
+    <namespace>http://tempuri.org/</namespace>
+    <action>
+      <name>GetInfo</name>
+      <parameter>
+        <type>string</type>
+        <dataName>ip</dataName>
+        <uiName>IP Address</uiName>
       </parameter>
     </action>
   </service>
