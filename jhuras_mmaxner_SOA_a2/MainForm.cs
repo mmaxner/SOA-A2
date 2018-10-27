@@ -219,7 +219,15 @@ namespace SOA___Assignment_2___Web_Services
 			}
 			catch (System.Net.WebException ex)
 			{
-				MessageBox.Show(this, ex.Message, ERROR_CONNECTING_TO_SERVICE, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                string message = ex.Message;
+                if (ex.Response != null)
+                {
+                    using (StreamReader responseReader = new StreamReader(ex.Response.GetResponseStream()))
+                    {
+                        message = responseReader.ReadToEnd();
+                    }
+                }
+                MessageBox.Show(this, message, ERROR_CONNECTING_TO_SERVICE, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
 			}
 			catch (Exception ex)
             {
